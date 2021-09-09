@@ -97,6 +97,9 @@ namespace ompl
         private:
             /** \brief Shared constructor functions */
             void initialize();
+            double stretch_factor_;
+            double DenseD_;
+            double SparseD_;
 
         public:
             /** \brief Display debug data about potential available solutions */
@@ -186,6 +189,17 @@ namespace ompl
             void addSolutionToQueue(const std::shared_ptr<ompl::geometric::PathGeometric>& path_ptr) {
               queuedSolutionPaths_.push_back(*path_ptr); 
             }
+            
+
+            void setStretchFactor(double stretch_factor);
+            double getStretchFactor();
+            void setSparseDelta(double SparseD);
+            double getSparseDelta();
+            void setDenseDelta(double DenseD);
+            double getDenseDelta();
+            
+
+
 
         protected:
             /**  The maintained experience planner instance */
@@ -207,6 +221,9 @@ namespace ompl
             std::vector<ompl::geometric::PathGeometric> queuedSolutionPaths_;
 
             bool hybridize_ {true}; 
+
+            
+
 
         };  // end of class Thunder
 

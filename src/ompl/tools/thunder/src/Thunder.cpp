@@ -515,3 +515,11 @@ bool ompl::tools::Thunder::doPostProcessing()
 
     return true;
 }
+
+void ompl::tools::Thunder::setStretchFactor(double stretch_factor){stretch_factor_ = stretch_factor;};
+double ompl::tools::Thunder::getStretchFactor(){return stretch_factor_;};
+void ompl::tools::Thunder::setSparseDelta(double SparseD){SparseD_ = SparseD;};
+double ompl::tools::Thunder::getSparseDelta(){return SparseD_;};
+void ompl::tools::Thunder::setDenseDelta(double DenseD){DenseD_ = DenseD;};
+double ompl::tools::Thunder::getDenseDelta(){return DenseD_;};
+            
