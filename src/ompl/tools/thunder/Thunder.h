@@ -97,9 +97,9 @@ namespace ompl
         private:
             /** \brief Shared constructor functions */
             void initialize();
-            double stretch_factor_;
-            double DenseD_;
-            double SparseD_;
+            double stretch_factor_ {1.2};
+            double DenseD_ {0.001};
+            double SparseD_ {0.1};
 
         public:
             /** \brief Display debug data about potential available solutions */
