@@ -136,10 +136,11 @@ void ompl::tools::Thunder::setup()
             experienceDB_->getSPARSdb()->setProblemDefinition(pdef_);
             experienceDB_->getSPARSdb()->setup();
 
-            experienceDB_->getSPARSdb()->setStretchFactor(getStretchFactor());
-            experienceDB_->getSPARSdb()->setSparseDeltaFraction(getSparseDelta());  // was 0.05 // vertex visibility range  =
-                                                                       // maximum_extent * this_fraction
-            experienceDB_->getSPARSdb()->setDenseDeltaFraction(getDenseDelta());
+            experienceDB_->getSPARSdb()->setStretchFactor(stretch_factor_);
+            experienceDB_->getSPARSdb()->setSparseDeltaFraction(SparseD_);  // was 0.05 // vertex visibility
+                                                                                    // range  = maximum_extent *
+                                                                                    // this_fraction
+            experienceDB_->getSPARSdb()->setDenseDeltaFraction(DenseD_);
 
             experienceDB_->getSPARSdb()->printDebug();
 
@@ -529,5 +530,3 @@ bool ompl::tools::Thunder::doPostProcessing()
 
     return true;
 }
-
-
