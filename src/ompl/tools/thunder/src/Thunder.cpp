@@ -43,12 +43,16 @@ namespace og = ompl::geometric;
 namespace ob = ompl::base;
 namespace ot = ompl::tools;
 
-ompl::tools::Thunder::Thunder(const base::SpaceInformationPtr &si) : ompl::tools::ExperienceSetup(si)
+ompl::tools::Thunder::Thunder(const base::SpaceInformationPtr &si, const double stretch_factor, const double DenseD,
+                              const double SparseD)
+  : ompl::tools::ExperienceSetup{si}, stretch_factor_{stretch_factor}, DenseD_{DenseD}, SparseD_{SparseD}
 {
     initialize();
 }
 
-ompl::tools::Thunder::Thunder(const base::StateSpacePtr &space) : ompl::tools::ExperienceSetup(space)
+ompl::tools::Thunder::Thunder(const base::StateSpacePtr &space, const double stretch_factor, const double DenseD,
+                              const double SparseD)
+  : ompl::tools::ExperienceSetup{space}, stretch_factor_{stretch_factor}, DenseD_{DenseD}, SparseD_{SparseD}
 {
     initialize();
 }
@@ -137,9 +141,8 @@ void ompl::tools::Thunder::setup()
             experienceDB_->getSPARSdb()->setup();
 
             experienceDB_->getSPARSdb()->setStretchFactor(stretch_factor_);
-            experienceDB_->getSPARSdb()->setSparseDeltaFraction(SparseD_);  // was 0.05 // vertex visibility
-                                                                                    // range  = maximum_extent *
-                                                                                    // this_fraction
+            // was 0.05 // vertex visibility range  = maximum_extent * this_fraction
+            experienceDB_->getSPARSdb()->setSparseDeltaFraction(SparseD_);
             experienceDB_->getSPARSdb()->setDenseDeltaFraction(DenseD_);
 
             experienceDB_->getSPARSdb()->printDebug();

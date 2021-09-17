@@ -87,19 +87,21 @@ namespace ompl
         {
         public:
             /** \brief Constructor needs the state space used for planning. */
-            explicit Thunder(const base::SpaceInformationPtr &si);
+            explicit Thunder(const base::SpaceInformationPtr &si, double stretch_factor = 1.2, double DenseD = 0.001,
+                             double SparseD = 0.1);
 
             /** \brief Constructor needs the state space used for planning.
              *  \param space - the state space to plan in
              */
-            explicit Thunder(const base::StateSpacePtr &space);
+            explicit Thunder(const base::StateSpacePtr &space, double stretch_factor = 1.2, double DenseD = 0.001,
+                             double SparseD = 0.1);
 
         private:
             /** \brief Shared constructor functions */
             void initialize();
-            double stretch_factor_{1.2};
-            double DenseD_{0.001};
-            double SparseD_{0.1};
+            double stretch_factor_{};
+            double DenseD_{};
+            double SparseD_{};
 
         public:
             /** \brief Display debug data about potential available solutions */
@@ -196,23 +198,28 @@ namespace ompl
             {
                 stretch_factor_ = stretch_factor;
             };
-            double getStretchFactor()
+
+            double getStretchFactor() const
             {
                 return stretch_factor_;
             };
+
             void setSparseDelta(double SparseD)
             {
                 SparseD_ = SparseD;
             };
-            double getSparseDelta()
+
+            double getSparseDelta() const
             {
                 return SparseD_;
             };
+
             void setDenseDelta(double DenseD)
             {
                 DenseD_ = DenseD;
             };
-            double getDenseDelta()
+
+            double getDenseDelta() const
             {
                 return DenseD_;
             };
@@ -240,7 +247,7 @@ namespace ompl
 
         };  // end of class Thunder
 
-    }  // namespace tools
+    }  // end of namespace tools
 
-}  // namespace ompl
+}  // end of namespace ompl
 #endif
