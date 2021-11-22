@@ -36,6 +36,8 @@
 
 #include <ompl/tools/thunder/Thunder.h>
 #include <ompl/geometric/planners/rrt/RRTConnect.h>
+#include <ompl/geometric/planners/rrt/InformedRRTstar.h>
+#include <ompl/geometric/planners/cforest/CForest.h>
 #include <ompl/base/PlannerStatus.h>
 #include <ompl/util/Console.h>
 
@@ -95,7 +97,9 @@ void ompl::tools::Thunder::setup()
                 }
                 else
                 {
-                    planner = std::make_shared<ompl::geometric::RRTConnect>(si_);
+                    planner = std::make_shared<ompl::geometric::CForest>(si_);
+                    // planner = std::make_shared<ompl::geometric::RRTConnect>(si_);
+                    // planner = std::make_shared<ompl::geometric::InformedRRTstar>(si_);
                 }
                 planner->setProblemDefinition(pdef_);
                 if (!planner->isSetup())
@@ -214,8 +218,9 @@ ompl::base::PlannerStatus ompl::tools::Thunder::solve(const base::PlannerTermina
     {
         OMPL_DEBUG("Thunder: stopping only after all threads report a solution");
     }
-
-    lastStatus_ = pp_->solve(ptc, hybridize_);  //, hybridize);
+    std::cout << "Thunder: minSolCount: " << minSolCount_ << std::endl;
+    std::cout << "Thunder: maxSolCount: " << maxSolCount_ << std::endl;
+    lastStatus_ = pp_->solve(ptc, minSolCount_, maxSolCount_, hybridize_);  //, hybridize);
 
     // Planning time
     planTime_ = time::seconds(time::now() - start);

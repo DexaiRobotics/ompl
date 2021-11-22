@@ -147,6 +147,15 @@ namespace ompl
                 return solve(ptc);
             }
 
+            base::PlannerStatus solve(const base::PlannerTerminationCondition &ptc, std::size_t minSolCount,
+                                      std::size_t maxSolCount,bool hybridize)
+            {
+                hybridize_ = hybridize;
+                minSolCount_ = minSolCount;
+                maxSolCount_ = maxSolCount;
+                return solve(ptc);
+            }
+
             /** \brief Save the experience database to file */
             bool save() override;
 
@@ -229,7 +238,8 @@ namespace ompl
             base::PlannerPtr rrPlanner_;
 
             /**  planners used for testing dual-thread scratch-only planning */
-            std::vector<base::PlannerPtr> planner_vec_{std::max(std::thread::hardware_concurrency(), 2u) - 1};
+            // std::vector<base::PlannerPtr> planner_vec_{std::max(std::thread::hardware_concurrency(), 2u) - 1};
+            std::vector<base::PlannerPtr> planner_vec_{1}; // for CForest
 
             /**  Flag indicating whether dual thread scratch planning is enabled */
             bool dualThreadScratchEnabled_{true};
@@ -244,6 +254,9 @@ namespace ompl
             std::vector<ompl::geometric::PathGeometric> queuedSolutionPaths_;
 
             bool hybridize_{true};
+
+            std::size_t minSolCount_ {21};
+            std::size_t maxSolCount_ {100};
 
         };  // end of class Thunder
 

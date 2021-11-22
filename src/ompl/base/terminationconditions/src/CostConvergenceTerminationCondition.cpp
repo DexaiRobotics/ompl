@@ -57,11 +57,20 @@ void ompl::base::CostConvergenceTerminationCondition::processNewSolution(const o
     double costLowerThreshold = (1. - epsilon_) * averageCost_;
     double costUpperThreshold = (1. + epsilon_) * averageCost_;
     averageCost_ = newCost;
+    std::cout << "added a new solution with cost " << solutionCost.value() << " and average cost " << averageCost_
+              << std::endl;
+    std::cerr << "added a new solution with cost " << solutionCost.value() << " and average cost " << averageCost_
+              << std::endl;
+    // display the thresholds
+    std::cout << "costLowerThreshold: " << costLowerThreshold << std::endl;
+    std::cout << "costUpperThreshold: " << costUpperThreshold << std::endl;
 
     if (solutions == solutionsWindow_ &&
         averageCost_ > costLowerThreshold &&
         averageCost_ < costUpperThreshold)
     {
+        std::cout << "Average cost converged to " << averageCost_ << std::endl;
+        std::cout << "cost converged after " << solutions << " solutions" << std::endl;
         OMPL_DEBUG("CostConvergenceTerminationCondition: Cost of optimizing planner converged after %lu solutions", solutions_);
         terminate();
     }
