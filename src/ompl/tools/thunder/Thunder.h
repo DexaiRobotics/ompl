@@ -238,8 +238,8 @@ namespace ompl
             base::PlannerPtr rrPlanner_;
 
             /**  planners used for testing dual-thread scratch-only planning */
-            // std::vector<base::PlannerPtr> planner_vec_{std::max(std::thread::hardware_concurrency(), 2u) - 1};
-            std::vector<base::PlannerPtr> planner_vec_{1}; // for CForest
+            std::vector<base::PlannerPtr> planner_vec_{std::max(std::thread::hardware_concurrency(), 2u) - 1};
+            // std::vector<base::PlannerPtr> planner_vec_{1}; // for CForest
 
             /**  Flag indicating whether dual thread scratch planning is enabled */
             bool dualThreadScratchEnabled_{true};
