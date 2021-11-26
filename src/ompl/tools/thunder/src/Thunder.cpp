@@ -149,7 +149,7 @@ void ompl::tools::Thunder::setup()
             experienceDB_->getSPARSdb()->setSparseDeltaFraction(SparseD_);
             experienceDB_->getSPARSdb()->setDenseDeltaFraction(DenseD_);
 
-            experienceDB_->getSPARSdb()->printDebug();
+            // experienceDB_->getSPARSdb()->printDebug();
 
             experienceDB_->load(filePath_);  // load from file
         }
@@ -218,8 +218,8 @@ ompl::base::PlannerStatus ompl::tools::Thunder::solve(const base::PlannerTermina
     {
         OMPL_DEBUG("Thunder: stopping only after all threads report a solution");
     }
-    std::cout << "Thunder: minSolCount: " << minSolCount_ << std::endl;
-    std::cout << "Thunder: maxSolCount: " << maxSolCount_ << std::endl;
+    // std::cout << "Thunder: minSolCount: " << minSolCount_ << std::endl;
+    // std::cout << "Thunder: maxSolCount: " << maxSolCount_ << std::endl;
     lastStatus_ = pp_->solve(ptc, minSolCount_, maxSolCount_, hybridize_);  //, hybridize);
 
     // Planning time
