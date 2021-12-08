@@ -175,7 +175,7 @@ void ompl::tools::ParallelPlan::solveMore(base::Planner *planner, std::size_t mi
         unsigned int nrSol = ++foundSolCount_;
         std::cout << "ParallelPlan: found " << nrSol << " solutions out of " << minSolCount << "/" << maxSolCount << std::endl;
         foundSolCountLock_.unlock();
-        std::cout << "ParallelPlan pdef has " << pdef_->getSolutions().size() << " solutions" << std::endl;
+        // std::cout << "ParallelPlan pdef has " << pdef_->getSolutions().size() << " solutions" << std::endl;
 
         if (nrSol >= maxSolCount) {
           std::cout << "ParallelPlan:solveMore Terminating because we have found " << nrSol << " solutions" << std::endl;
