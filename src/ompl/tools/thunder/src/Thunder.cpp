@@ -97,8 +97,8 @@ void ompl::tools::Thunder::setup()
                 }
                 else
                 {
-                    // planner = std::make_shared<ompl::geometric::CForest>(si_);
-                    planner = std::make_shared<ompl::geometric::RRTConnect>(si_);
+                    planner = std::make_shared<ompl::geometric::CForest>(si_);
+                    // planner = std::make_shared<ompl::geometric::RRTConnect>(si_);
                     // planner = std::make_shared<ompl::geometric::InformedRRTstar>(si_);
                 }
                 planner->setProblemDefinition(pdef_);
