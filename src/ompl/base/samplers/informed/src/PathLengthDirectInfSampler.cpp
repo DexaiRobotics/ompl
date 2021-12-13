@@ -124,13 +124,14 @@ namespace ompl
                     // An ease of use upcasted pointer to the space as a compound space
                     const CompoundStateSpace *compoundSpace = InformedSampler::space_->as<CompoundStateSpace>();
 
-                    // Sanity check
+                    // Sanity check - Removed
+                    /*
                     if (compoundSpace->getSubspaceCount() != 2u)
                     {
                         // Pout
                         throw Exception("The provided compound StateSpace is SE(2) or SE(3) but does not have exactly "
                                         "2 subspaces.");
-                    }
+                    }*/
 
                     // Iterate over the state spaces, finding the real vector and SO components.
                     for (unsigned int idx = 0u;
