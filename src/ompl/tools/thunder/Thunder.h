@@ -147,8 +147,8 @@ namespace ompl
                 return solve(ptc);
             }
 
-            base::PlannerStatus solve(const base::PlannerTerminationCondition &ptc, std::size_t minSolCount,
-                                      std::size_t maxSolCount,bool hybridize)
+            base::PlannerStatus solve(const base::PlannerTerminationCondition &ptc, const std::size_t minSolCount,
+                                      const std::size_t maxSolCount, const bool hybridize)
             {
                 hybridize_ = hybridize;
                 minSolCount_ = minSolCount;

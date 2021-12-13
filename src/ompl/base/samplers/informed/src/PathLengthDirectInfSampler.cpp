@@ -115,7 +115,6 @@ namespace ompl
             }
             else if (InformedSampler::space_->isCompound())
             {
-              std::cout << "PathLengthDirectInfSampler: Compound StateSpace. State Space Type: " << InformedSampler::space_->getType() << std::endl;
                 // Check that it is SE2 or SE3
                 if (InformedSampler::space_->getType() == STATE_SPACE_SE2 ||
                     InformedSampler::space_->getType() == STATE_SPACE_SE3 || 
@@ -126,13 +125,13 @@ namespace ompl
                     const CompoundStateSpace *compoundSpace = InformedSampler::space_->as<CompoundStateSpace>();
 
                     // // Sanity check
-                    // if (compoundSpace->getSubspaceCount() != 2u)
-                    // {
-                    //     std::cout << "state space has " << compoundSpace->getSubspaceCount() << " subspaces" << std::endl;
-                    //     // Pout
-                    //     throw Exception("The provided compound StateSpace is SE(2) or SE(3) but does not have exactly "
-                    //                     "2 subspaces.");
-                    // }
+                    if (compoundSpace->getSubspaceCount() != 2u)
+                    {
+                        std::cout << "state space has " << compoundSpace->getSubspaceCount() << " subspaces" << std::endl;
+                        // Pout
+                        throw Exception("The provided compound StateSpace is SE(2) or SE(3) but does not have exactly "
+                                        "2 subspaces.");
+                    }
 
                     // Iterate over the state spaces, finding the real vector and SO components.
                     for (unsigned int idx = 0u;
