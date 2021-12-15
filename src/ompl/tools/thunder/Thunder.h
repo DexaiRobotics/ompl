@@ -88,13 +88,13 @@ namespace ompl
         public:
             /** \brief Constructor needs the state space used for planning. */
             explicit Thunder(const base::SpaceInformationPtr &si, double stretch_factor = 1.2, double DenseD = 0.001,
-                             double SparseD = 0.1);
+                             double SparseD = 0.04);
 
             /** \brief Constructor needs the state space used for planning.
              *  \param space - the state space to plan in
              */
             explicit Thunder(const base::StateSpacePtr &space, double stretch_factor = 1.2, double DenseD = 0.001,
-                             double SparseD = 0.1);
+                             double SparseD = 0.04);
 
         private:
             /** \brief Shared constructor functions */
