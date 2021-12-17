@@ -1071,7 +1071,7 @@ double ompl::base::CompoundStateSpace::distance(const State *state1, const State
     const auto *cstate2 = static_cast<const CompoundState *>(state2);
     double dist = 0.0;
     for (unsigned int i = 0; i < componentCount_; ++i)
-        dist += std::pow((weights_[i] * components_[i]->distance(cstate1->components[i], cstate2->components[i])), 2);
+        dist += weights_[i] * std::pow(components_[i]->distance(cstate1->components[i], cstate2->components[i]), 2);
     return std::sqrt(dist);
 }
 
