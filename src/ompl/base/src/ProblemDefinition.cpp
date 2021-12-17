@@ -426,7 +426,8 @@ void ompl::base::ProblemDefinition::addSolutionPath(const PathPtr &path, bool ap
 {
     PlannerSolution sol(path);
 
-    // 2 lines added by Ramy
+    // These 2 lines insure that the cost function we specify is passed to the solutions.
+    // The cost function will now be used in the < operator between solutions, and hence sorting will be according to cost.
     Cost sol_cost {path->cost(optimizationObjective_)};
     sol.setOptimized(optimizationObjective_, sol_cost, false);
     
