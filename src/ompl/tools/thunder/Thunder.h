@@ -156,6 +156,16 @@ namespace ompl
                 return solve(ptc);
             }
 
+            base::PlannerStatus solve(const base::PlannerTerminationCondition &ptc, const std::size_t minSolCount,
+                                      const std::size_t maxSolCount, const bool hybridize, const bool plan_with_cforest)
+            {
+                hybridize_ = hybridize;
+                plan_with_cforest_ = plan_with_cforest;
+                minSolCount_ = minSolCount;
+                maxSolCount_ = maxSolCount;
+                return solve(ptc);
+            }
+
             /** \brief Save the experience database to file */
             bool save() override;
 
@@ -257,6 +267,8 @@ namespace ompl
 
             std::size_t minSolCount_ {21};
             std::size_t maxSolCount_ {100};
+
+            bool plan_with_cforest_ {false};
 
         };  // end of class Thunder
 

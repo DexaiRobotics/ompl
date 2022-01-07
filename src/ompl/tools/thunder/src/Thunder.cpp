@@ -95,11 +95,13 @@ void ompl::tools::Thunder::setup()
                     OMPL_INFORM("Planner Allocator specified");
                     planner = pa_(si_);
                 }
-                else
+                else if (plan_with_cforest_)
                 {
                     planner = std::make_shared<ompl::geometric::CForest>(si_);
-                    // planner = std::make_shared<ompl::geometric::RRTConnect>(si_);
-                    // planner = std::make_shared<ompl::geometric::InformedRRTstar>(si_);
+                }
+                else
+                {
+                    planner = std::make_shared<ompl::geometric::RRTConnect>(si_);
                 }
                 planner->setProblemDefinition(pdef_);
                 if (!planner->isSetup())
