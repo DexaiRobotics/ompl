@@ -102,6 +102,7 @@ namespace ompl
             double stretch_factor_{};
             double DenseD_{};
             double SparseD_{};
+            size_t n_threads_{0};
 
         public:
             /** \brief Display debug data about potential available solutions */
@@ -157,10 +158,11 @@ namespace ompl
             }
 
             base::PlannerStatus solve(const base::PlannerTerminationCondition &ptc, const std::size_t minSolCount,
-                                      const std::size_t maxSolCount, const bool hybridize, const bool plan_with_cforest)
+                                      const std::size_t maxSolCount, const bool hybridize, const bool plan_with_cforest, const size_t n_threads = 0)
             {
                 hybridize_ = hybridize;
                 plan_with_cforest_ = plan_with_cforest;
+                n_threads_ = n_threads;
                 minSolCount_ = minSolCount;
                 maxSolCount_ = maxSolCount;
                 return solve(ptc);
@@ -248,8 +250,10 @@ namespace ompl
             base::PlannerPtr rrPlanner_;
 
             /**  planners used for testing dual-thread scratch-only planning */
-            // std::vector<base::PlannerPtr> planner_vec_{std::max(std::thread::hardware_concurrency(), 2u) - 1};
-            std::vector<base::PlannerPtr> planner_vec_{1}; // for CForest
+            std::vector<base::PlannerPtr> planner_vec_ {std::max(std::thread::hardware_concurrency(), 2u) - 1};
+
+            /**  number of threads to use for RRTConnect planning. 0 for max */
+            size_t n_threads {0};
 
             /**  Flag indicating whether dual thread scratch planning is enabled */
             bool dualThreadScratchEnabled_{true};
