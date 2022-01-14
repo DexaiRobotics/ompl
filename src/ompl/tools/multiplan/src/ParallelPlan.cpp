@@ -153,10 +153,8 @@ void ompl::tools::ParallelPlan::solveOne(base::Planner *planner, std::size_t min
         foundSolCountLock_.lock();
         unsigned int nrSol = ++foundSolCount_;
         foundSolCountLock_.unlock();
-        if (nrSol >= minSolCount) {
-           ptc->terminate();
-        }
-           
+        if (nrSol >= minSolCount)
+            ptc->terminate();
         OMPL_DEBUG("ParallelPlan.solveOne: Solution found by %s in %lf seconds", planner->getName().c_str(), duration);
     }
 }
@@ -174,10 +172,8 @@ void ompl::tools::ParallelPlan::solveMore(base::Planner *planner, std::size_t mi
         unsigned int nrSol = ++foundSolCount_;
         foundSolCountLock_.unlock();
 
-        if (nrSol >= maxSolCount) {
-          ptc->terminate();
-        }
-            
+        if (nrSol >= maxSolCount)
+            ptc->terminate();
 
         double found_path_length {pdef_->getSolutionPath()->length()};
         OMPL_DEBUG("ParallelPlan.solveMore: Solution of length: %lf found by %s in %lf seconds", found_path_length, planner->getName().c_str(), duration);
