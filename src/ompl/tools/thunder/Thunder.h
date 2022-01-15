@@ -269,7 +269,7 @@ namespace ompl
 
             bool hybridize_{true};
 
-            std::size_t minSolCount_ {21};
+            std::size_t minSolCount_ {1};
             std::size_t maxSolCount_ {100};
 
             bool plan_with_cforest_ {false};
