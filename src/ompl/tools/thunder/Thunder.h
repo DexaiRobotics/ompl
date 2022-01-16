@@ -157,17 +157,6 @@ namespace ompl
                 return solve(ptc);
             }
 
-            base::PlannerStatus solve(const base::PlannerTerminationCondition &ptc, const std::size_t minSolCount,
-                                      const std::size_t maxSolCount, const bool hybridize, const bool plan_with_cforest, const size_t n_threads = 0)
-            {
-                hybridize_ = hybridize;
-                plan_with_cforest_ = plan_with_cforest;
-                n_threads_ = n_threads;
-                minSolCount_ = minSolCount;
-                maxSolCount_ = maxSolCount;
-                return solve(ptc);
-            }
-
             /** \brief Save the experience database to file */
             bool save() override;
 
@@ -181,6 +170,26 @@ namespace ompl
 
             /** \brief Print information about the current setup */
             void print(std::ostream &out = std::cout) const override;
+
+            /** \brief set the from scratch planner to be CForest */
+            void setCforest() {
+              plan_with_cforest_ = true;
+            }
+
+            /** \brief set the from scratch planner to be RRT */
+            void setRRT() {
+              plan_with_cforest_ = false;
+            }
+
+            /** \brief Set the number of threads to use for planning. */
+            void setNumThreads(size_t n_threads) {
+              n_threads_ = n_threads;
+            }
+
+            /** \brief Get the number of threads used for planning. */
+            size_t getNumThreads() const {
+              return n_threads_;
+            }
 
             /** \brief This method will create the necessary classes
                 for planning. The solve() method will call this function automatically. */
@@ -250,7 +259,7 @@ namespace ompl
             base::PlannerPtr rrPlanner_;
 
             /**  planners used for testing dual-thread scratch-only planning */
-            std::vector<base::PlannerPtr> planner_vec_ {std::max(std::thread::hardware_concurrency(), 2u) - 1};
+            std::vector<base::PlannerPtr> planner_vec_ {};
 
             /**  number of threads to use for RRTConnect planning. 0 for max */
             size_t n_threads {0};

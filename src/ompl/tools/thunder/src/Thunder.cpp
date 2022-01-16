@@ -84,8 +84,20 @@ void ompl::tools::Thunder::setup()
 
         // Setup planning from scratch planner
         OMPL_INFORM("Initializing planners");
-        // planner_vec_.clear();
-        // planner_vec_ = {nullptr, nullptr, nullptr, nullptr};
+        // set number of threads if not already set
+        if(n_threads_ == 0) {
+          n_threads_ = std::max(std::thread::hardware_concurrency(), 2u) - 1;
+        }
+        // set the size of the planner vector
+        planner_vec_.clear();
+        if (plan_with_cforest_) {
+          std::vector<base::PlannerPtr> planner_vec {1};
+          planner_vec_ = planner_vec;
+        } else {
+          std::vector<base::PlannerPtr> planner_vec {n_threads_};
+          planner_vec_ = planner_vec;
+        }
+        // set up planner ptr vector based on planner type
         for (auto &planner : planner_vec_)
         {
             if (!planner)
@@ -158,18 +170,6 @@ void ompl::tools::Thunder::setup()
 
         // Set the configured flag
         configured_ = true;
-
-        // set up planner ptr vector based on planner type
-        if (plan_with_cforest_) {
-          std::vector<base::PlannerPtr> planner_vec {1};
-          planner_vec_ = planner_vec;
-        } else if (n_threads_ == 0) {
-          std::vector<base::PlannerPtr> planner_vec {std::max(std::thread::hardware_concurrency(), 2u) - 1};
-          planner_vec_ = planner_vec;
-        } else {
-          std::vector<base::PlannerPtr> planner_vec {n_threads_};
-          planner_vec_ = planner_vec;
-        }
     }
 }
 
