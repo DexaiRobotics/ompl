@@ -255,6 +255,14 @@ namespace ompl
                 return DenseD_;
             };
 
+            void setSavePlansFromRecall (bool savePlansFromRecall) {
+                savePlansFromRecall_ = savePlansFromRecall;
+            }
+
+            bool getSavePlansFromRecall() {
+                return savePlansFromRecall_;
+            }
+
         protected:
             /**  The maintained experience planner instance */
             base::PlannerPtr rrPlanner_;
@@ -278,7 +286,7 @@ namespace ompl
             std::vector<ompl::geometric::PathGeometric> queuedSolutionPaths_;
 
             bool hybridize_{true};            
-            
+
             /** \brief Flag to indicate whether or not we save plans obtained from recall */
             bool savePlansFromRecall_ {true};
 
