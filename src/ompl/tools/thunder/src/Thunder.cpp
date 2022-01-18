@@ -94,7 +94,7 @@ void ompl::tools::Thunder::setup()
           std::vector<base::PlannerPtr> planner_vec {1};
           planner_vec_ = planner_vec;
         } else {
-          std::vector<base::PlannerPtr> planner_vec {n_threads_};
+          std::vector<base::PlannerPtr> planner_vec (n_threads_);
           planner_vec_ = planner_vec;
         }
         // set up planner ptr vector based on planner type
