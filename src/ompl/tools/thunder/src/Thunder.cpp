@@ -233,7 +233,7 @@ ompl::base::PlannerStatus ompl::tools::Thunder::solve(const base::PlannerTermina
         OMPL_DEBUG("Thunder: stopping only after all threads report a solution");
     }
     
-    lastStatus_ = pp_->solve(ptc, minSolCount_, maxSolCount_, hybridize_);  //, hybridize);
+    lastStatus_ = pp_->solve(ptc, minSolCount_, maxSolCount_, hybridize_); 
 
     // Planning time
     planTime_ = time::seconds(time::now() - start);
@@ -319,7 +319,12 @@ ompl::base::PlannerStatus ompl::tools::Thunder::solve(const base::PlannerTermina
                 log.is_saved = "less_2_states";
                 log.too_short = true;
             }
+<<<<<<< HEAD
             else if (savePlansFromRecall_)  // always add when from recall
+=======
+            // TODO (@yammineramy) - Make this into a flag
+            else if (true)  // always add when from recall
+>>>>>>> 59d80b91369db430af79a3d6120908e596bb9546
             {
                 OMPL_INFORM("Adding path to database because SPARS will decide for us if we should keep the nodes");
 

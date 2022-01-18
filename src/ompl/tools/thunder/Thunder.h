@@ -148,6 +148,7 @@ namespace ompl
                 return solve(ptc);
             }
 
+            /** \brief overload so we can toggle min / max solution counts before returning and toggle hybridize */
             base::PlannerStatus solve(const base::PlannerTerminationCondition &ptc, const std::size_t minSolCount,
                                       const std::size_t maxSolCount, const bool hybridize)
             {
