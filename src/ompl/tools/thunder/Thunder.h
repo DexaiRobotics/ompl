@@ -276,7 +276,10 @@ namespace ompl
             /** \brief Accumulated experiences to be later added to experience database */
             std::vector<ompl::geometric::PathGeometric> queuedSolutionPaths_;
 
-            bool hybridize_{true};
+            bool hybridize_{true};            
+            
+            /** \brief Flag to indicate whether or not we save plans obtained from recall */
+            bool savePlansFromRecall_ {true};
 
             std::size_t minSolCount_ {1};
             std::size_t maxSolCount_ {100};
