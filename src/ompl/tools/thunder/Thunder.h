@@ -255,7 +255,7 @@ namespace ompl
                 return DenseD_;
             };
 
-            void setSavePlansFromRecall (bool savePlansFromRecall) {
+            void setSavePlansFromRecall (const bool savePlansFromRecall) {
                 savePlansFromRecall_ = savePlansFromRecall;
             }
 
