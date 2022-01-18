@@ -90,7 +90,7 @@ void ompl::tools::Thunder::setup()
         }
         // set the size of the planner vector
         planner_vec_.clear();
-        if (plan_with_cforest_) {
+        if (planner_type_ == thunderPlanner::PLANNER_CFOREST) {
           std::vector<base::PlannerPtr> planner_vec {1};
           planner_vec_ = planner_vec;
         } else {
@@ -107,7 +107,7 @@ void ompl::tools::Thunder::setup()
                     OMPL_INFORM("Planner Allocator specified");
                     planner = pa_(si_);
                 }
-                else if (plan_with_cforest_)
+                else if (planner_type_ == thunderPlanner::PLANNER_CFOREST)
                 {
                     planner = std::make_shared<ompl::geometric::CForest>(si_);
                 }

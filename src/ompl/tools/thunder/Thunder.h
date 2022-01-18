@@ -60,6 +60,13 @@
 
 namespace ompl
 {
+
+  // An enum of supported thunder planners, alphabetical order
+  enum thunderPlanner
+  {
+      PLANNER_CFOREST,
+      PLANNER_RRTCONNECT
+  };
     namespace tools
     {
         /**
@@ -174,12 +181,12 @@ namespace ompl
 
             /** \brief set the from scratch planner to be CForest */
             void setCforest() {
-              plan_with_cforest_ = true;
+              planner_type_ = thunderPlanner::PLANNER_CFOREST;
             }
 
             /** \brief set the from scratch planner to be RRT */
             void setRRT() {
-              plan_with_cforest_ = false;
+              planner_type_ = thunderPlanner::PLANNER_RRTCONNECT;
             }
 
             /** \brief Set the number of threads to use for planning. */
@@ -285,7 +292,7 @@ namespace ompl
             std::size_t minSolCount_ {1};
             std::size_t maxSolCount_ {100};
 
-            bool plan_with_cforest_ {false};
+            thunderPlanner planner_type_ {PLANNER_RRTCONNECT};
 
         };  // end of class Thunder
 
