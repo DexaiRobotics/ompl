@@ -262,6 +262,14 @@ namespace ompl
                 return DenseD_;
             };
 
+            void setSavePlansFromRecall (const bool savePlansFromRecall) {
+                savePlansFromRecall_ = savePlansFromRecall;
+            }
+
+            bool getSavePlansFromRecall() {
+                return savePlansFromRecall_;
+            }
+
         protected:
             /**  The maintained experience planner instance */
             base::PlannerPtr rrPlanner_;
@@ -285,14 +293,14 @@ namespace ompl
             std::vector<ompl::geometric::PathGeometric> queuedSolutionPaths_;
 
             bool hybridize_{true};            
-            
+
             /** \brief Flag to indicate whether or not we save plans obtained from recall */
             bool savePlansFromRecall_ {true};
 
             std::size_t minSolCount_ {1};
             std::size_t maxSolCount_ {100};
 
-            thunderPlanner planner_type_ {PLANNER_RRTCONNECT};
+            thunderPlanner planner_type_ {thunderPlanner::PLANNER_RRTCONNECT};
 
         };  // end of class Thunder
 
