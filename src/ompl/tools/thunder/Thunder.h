@@ -88,13 +88,13 @@ namespace ompl
         public:
             /** \brief Constructor needs the state space used for planning. */
             explicit Thunder(const base::SpaceInformationPtr &si, double stretch_factor = 1.2, double DenseD = 0.001,
-                             double SparseD = 0.04);
+                             double SparseD = 0.1);
 
             /** \brief Constructor needs the state space used for planning.
              *  \param space - the state space to plan in
              */
             explicit Thunder(const base::StateSpacePtr &space, double stretch_factor = 1.2, double DenseD = 0.001,
-                             double SparseD = 0.04);
+                             double SparseD = 0.1);
 
         private:
             /** \brief Shared constructor functions */
@@ -102,6 +102,7 @@ namespace ompl
             double stretch_factor_{};
             double DenseD_{};
             double SparseD_{};
+            size_t n_threads_{0};
 
         public:
             /** \brief Display debug data about potential available solutions */
@@ -169,6 +170,26 @@ namespace ompl
 
             /** \brief Print information about the current setup */
             void print(std::ostream &out = std::cout) const override;
+
+            /** \brief set the from scratch planner to be CForest */
+            void setCforest() {
+              plan_with_cforest_ = true;
+            }
+
+            /** \brief set the from scratch planner to be RRT */
+            void setRRT() {
+              plan_with_cforest_ = false;
+            }
+
+            /** \brief Set the number of threads to use for planning. */
+            void setNumThreads(size_t n_threads) {
+              n_threads_ = n_threads;
+            }
+
+            /** \brief Get the number of threads used for planning. */
+            size_t getNumThreads() const {
+              return n_threads_;
+            }
 
             /** \brief This method will create the necessary classes
                 for planning. The solve() method will call this function automatically. */
@@ -238,8 +259,10 @@ namespace ompl
             base::PlannerPtr rrPlanner_;
 
             /**  planners used for testing dual-thread scratch-only planning */
-            // std::vector<base::PlannerPtr> planner_vec_{std::max(std::thread::hardware_concurrency(), 2u) - 1};
-            std::vector<base::PlannerPtr> planner_vec_{1}; // for CForest
+            std::vector<base::PlannerPtr> planner_vec_ {};
+
+            /**  number of threads to use for RRTConnect planning. 0 for max */
+            size_t n_threads {0};
 
             /**  Flag indicating whether dual thread scratch planning is enabled */
             bool dualThreadScratchEnabled_{true};
@@ -255,8 +278,10 @@ namespace ompl
 
             bool hybridize_{true};
 
-            std::size_t minSolCount_ {21};
+            std::size_t minSolCount_ {1};
             std::size_t maxSolCount_ {100};
+
+            bool plan_with_cforest_ {false};
 
         };  // end of class Thunder
 
