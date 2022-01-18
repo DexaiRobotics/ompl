@@ -182,7 +182,7 @@ namespace ompl
             }
 
             /** \brief Set the number of threads to use for planning. */
-            void setNumThreads(size_t n_threads) {
+            void setNumThreads(const size_t n_threads) {
               n_threads_ = n_threads;
             }
 
