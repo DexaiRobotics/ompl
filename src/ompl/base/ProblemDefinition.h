@@ -410,7 +410,7 @@ namespace ompl
             }
 
             /** \brief Sets the flag that controls whether or not we accept approximate solutions */
-            void setAcceptApproximate(bool acceptApproximate) {
+            void setAcceptApproximate(const bool acceptApproximate) {
                 acceptApproximate_ = acceptApproximate;
             }
 
