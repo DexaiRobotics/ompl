@@ -462,7 +462,7 @@ namespace ompl
             /// @endcond
 
             // flag to either save or not save approximate solutions
-            bool acceptApproximate_ {true};
+            bool acceptApproximate_ {false};
 
             /** \brief The set of solutions computed for this goal (maintains an array of PlannerSolution) */
             PlannerSolutionSetPtr solutions_;

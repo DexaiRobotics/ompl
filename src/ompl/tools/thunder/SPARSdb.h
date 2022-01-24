@@ -436,6 +436,22 @@ namespace ompl
                 return stretchFactor_;
             }
 
+            bool getDenseRoadmap() const {
+                return denseRoadmap_;
+            }
+
+            void setDenseRoadmap (bool denseRoadmap) {
+                denseRoadmap_ = denseRoadmap;
+            }
+
+            bool getCollisionCheckOnRecall () const {
+                return collisionCheckOnRecall_;
+            }
+
+            void setCollisionCheckOnRecall (bool collisionCheckOnRecall) {
+                collisionCheckOnRecall_ = collisionCheckOnRecall;
+            }
+
             bool getGuardSpacingFactor(double pathLength, double &numGuards, double &spacingFactor);
 
             /**

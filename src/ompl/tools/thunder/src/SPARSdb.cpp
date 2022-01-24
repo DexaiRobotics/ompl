@@ -389,7 +389,7 @@ bool ompl::geometric::SPARSdb::lazyCollisionSearch(const Vertex &start, const Ve
         }
 
         // Check if all the points in the potential solution are valid
-        if (!collisionCheckOnRecall_ || lazyCollisionCheck(vertexPath, ptc))
+        if (collisionCheckOnRecall_ && lazyCollisionCheck(vertexPath, ptc))
         {
             if (verbose_)
             {
@@ -950,8 +950,11 @@ bool ompl::geometric::SPARSdb::addStateToRoadmap(const base::PlannerTerminationC
     ++iterations_;
 
     //@TODO - Ramy: Test if creating another nbhd to seperate recall from connectivity has positive effects.
+    // When (denseRoadmap_ == true), graphNeighborhood is the neighborhood used to connect different connected components visible to an added node,
+    // as well as the neighborhood the rr_planner looks to find close path in the database to a given planning problem.
+    // When (denseRoadmao_ == false), graphNeighborhood recovers the classical use it had in Spars. 
     findGraphNeighbors(qNew, graphNeighborhood, visibleNeighborhood);
-    if (denseRoadmap_)
+    if (denseRoadmap_) //This neighborhood will control the granularity of the roadmap, i.e. the minimum distance between two nodes.
         findGraphNeighbors(qNew, gnbhd, vnbhd, granularity_);
 
     if (verbose_)
@@ -978,7 +981,7 @@ bool ompl::geometric::SPARSdb::addStateToRoadmap(const base::PlannerTerminationC
         {
             if (verbose_)
                 OMPL_INFORM(" --- checkAddInterface() Does this node's neighbor's need it to better connect them? ");
-            if (denseRoadmap_ || !checkAddInterface(qNew, graphNeighborhood, visibleNeighborhood)) // @TODO - Ramy: I think with the new changes this becomes unnecessary. Test without it and see.
+            if (!checkAddInterface(qNew, graphNeighborhood, visibleNeighborhood)) // @TODO - Ramy: I think with the new changes this becomes unnecessary. Test without it and see.
             {
                 if (verbose_)
                     OMPL_INFORM(" ---- Ensure SPARS asymptotic optimality");
