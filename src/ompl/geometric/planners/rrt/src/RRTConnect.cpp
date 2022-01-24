@@ -224,10 +224,10 @@ ompl::base::PlannerStatus ompl::geometric::RRTConnect::solve(const base::Planner
     tgi.xstate = si_->allocState();
 
     Motion *approxsol = nullptr;
-    double approxdif {0.0};
+    double approxdif {0.0}; // by default we don't allow error, meaning we do not accept approximate solutions since they are costly to process and are never used in our application
     bool returnApproxSol {pdef_->getReturnApproximateSolutions()};
     if (returnApproxSol)
-        approxdif = std::numeric_limits<double>::infinity();
+        approxdif = std::numeric_limits<double>::infinity(); // if returnApproxSol flag is on, accept any partial solution (can be changed based on application)
     auto *rmotion = new Motion(si_);
     base::State *rstate = rmotion->state;
     bool startTree = true;

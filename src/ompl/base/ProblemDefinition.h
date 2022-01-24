@@ -405,34 +405,32 @@ namespace ompl
             void print(std::ostream &out = std::cout) const;
 
             /** \brief Setters and getters for computeSolutionCost_ flag*/
-            void setComputeSolutionCost (const bool computeSolutionCost) {
+            inline void setComputeSolutionCost (const bool computeSolutionCost) {
                 computeSolutionCost_ = computeSolutionCost;   
             }
 
             /** \brief Setters and getters for computeSolutionCost_ flag*/
-            bool geComputeSolutionCost () {
+            inline bool getComputeSolutionCost () const {
                 return computeSolutionCost_;   
             }
 
             /** \brief Setters and getters for returnApproximateSolutions_ flag*/
-            void setReturnApproximateSolutions (const bool returnApproximateSolutions) {
+            inline void setReturnApproximateSolutions (const bool returnApproximateSolutions) {
                 returnApproximateSolutions_ = returnApproximateSolutions;   
             }
 
             /** \brief Setters and getters for returnApproximateSolutions_ flag*/
-            bool getReturnApproximateSolutions () {
+            inline bool getReturnApproximateSolutions () const {
                 return returnApproximateSolutions_;   
             }
 
-            
-
             /** \brief Returns the flag that controls whether or not we accept approximate solutions */
-            bool acceptsApproximate() {
+            inline bool acceptsApproximate() const {
                 return acceptApproximate_;
             }
 
             /** \brief Sets the flag that controls whether or not we accept approximate solutions */
-            void setAcceptApproximate(const bool acceptApproximate) {
+            inline void setAcceptApproximate(const bool acceptApproximate) {
                 acceptApproximate_ = acceptApproximate;
             }
 

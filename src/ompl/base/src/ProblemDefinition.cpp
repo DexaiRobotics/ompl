@@ -428,6 +428,10 @@ void ompl::base::ProblemDefinition::addSolutionPath(const PathPtr &path, bool ap
     if (!computeSolutionCost_) {
         Cost sol_cost {path->cost(optimizationObjective_)};
         sol.setOptimized(optimizationObjective_, sol_cost, false);
+        OMPL_INFORM("ProblemDefinition: Solution cost has been computed to be %d", sol_cost);
+    }
+    else {
+        OMPL_INFORM("ProblemDefinition: Solution cost computation has been skipped");
     }
     if (approximate && !acceptApproximate_)
         return;

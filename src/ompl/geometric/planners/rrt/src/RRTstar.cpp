@@ -212,10 +212,10 @@ ompl::base::PlannerStatus ompl::geometric::RRTstar::solve(const base::PlannerTer
     const base::ReportIntermediateSolutionFn intermediateSolutionCallback = pdef_->getIntermediateSolutionCallback();
 
     Motion *approxGoalMotion = nullptr;
-    double approxDist {0.0};
+    double approxDist {0.0};                                    // by default we don't allow error, meaning we do not accept approximate solutions since they are costly to process and are never used in our application
     bool returnApproxSol {pdef_->getReturnApproximateSolutions()};
     if (returnApproxSol)
-        approxDist = std::numeric_limits<double>::infinity();
+        approxDist = std::numeric_limits<double>::infinity();   // if returnApproxSol flag is on, accept any partial solution (can be changed based on application)
     auto *rmotion = new Motion(si_);
     base::State *rstate = rmotion->state;
     base::State *xstate = si_->allocState();
