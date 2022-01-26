@@ -1081,7 +1081,7 @@ bool ompl::geometric::SPARSdb::checkAddConnectivity(const base::State *qNew, std
     // Identify visibile nodes around our new state that are unconnected (in different connected components)
     // and connect them
     std::vector<Vertex> statesInDiffConnectedComponents;  // links
-    Vertex newVertex;
+    Vertex newVertex {};
     if (denseRoadmap_) {
         newVertex = addGuard(si_->cloneState(qNew), COVERAGE);
         if (visibleNeighborhood.size() == 1)
@@ -1289,10 +1289,12 @@ void ompl::geometric::SPARSdb::findGraphNeighbors(base::State *st, std::vector<V
 {
     visibleNeighborhood.clear();
     stateProperty_[queryVertex_] = st;
-    if (!radius.has_value()) radius = sparseDelta_;
-    nn_->nearestR(queryVertex_, radius, graphNeighborhood);
+    if (!radius.has_value()) {
+        radius = sparseDelta_;
+    }
+    nn_->nearestR(queryVertex_, *radius, graphNeighborhood);
     if (verbose_ && false)
-        OMPL_INFORM("Finding nearest nodes in NN tree within radius %f", radius);
+        OMPL_INFORM("Finding nearest nodes in NN tree within radius %f", *radius);
     stateProperty_[queryVertex_] = nullptr;
 
     // Now that we got the neighbors from the NN, we must remove any we can't see
@@ -1305,7 +1307,9 @@ bool ompl::geometric::SPARSdb::findGraphNeighbors(const base::State *state, std:
 {
     base::State *stateCopy = si_->cloneState(state);
 
-    if (!radius.has_value()) radius = sparseDelta_;
+    if (!radius.has_value()) {
+        radius = sparseDelta_;
+    }
     // Don't check for visibility
     graphNeighborhood.clear();
     stateProperty_[queryVertex_] = stateCopy;
@@ -1317,7 +1321,7 @@ bool ompl::geometric::SPARSdb::findGraphNeighbors(const base::State *state, std:
         0.25;  // speed to which we look outside the original sparse delta neighborhood
     for (std::size_t i = 0; i < expandNeighborhoodSearchAttempts; ++i)
     {
-        neighborSearchRadius = radius + i * EXPAND_NEIGHBORHOOD_RATE * radius;
+        neighborSearchRadius = *radius + i * EXPAND_NEIGHBORHOOD_RATE * (*radius);
         if (verbose_)
         {
             OMPL_INFORM("-------------------------------------------------------");
