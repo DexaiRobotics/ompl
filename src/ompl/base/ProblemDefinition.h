@@ -410,7 +410,7 @@ namespace ompl
             }
 
             /** \brief Setters and getters for computeSolutionCost_ flag*/
-            bool getComputeSolutionCost () {
+            bool getComputeSolutionCost () const {
                 return computeSolutionCost_;   
             }
 
@@ -420,7 +420,7 @@ namespace ompl
             }
 
             /** \brief Setters and getters for returnApproximateSolutions_ flag*/
-            bool getReturnApproximateSolutions () {
+            bool getReturnApproximateSolutions () const {
                 return returnApproximateSolutions_;   
             }
 
