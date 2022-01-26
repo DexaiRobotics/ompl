@@ -44,6 +44,7 @@
 #include "ompl/tools/config/MagicConstants.h"
 
 #include <thread>
+
 #include <limits>
 #include <utility>
 
@@ -156,6 +157,7 @@ namespace ompl
                 OMPL_INFORM("RetrieveRepair::solve() No nearest start or goal found");
                 return base::PlannerStatus::TIMEOUT;  // The planner failed to find a solution
             }
+
             // Save this for future debugging
             nearestPaths_.push_back(candidateSolution.getGeometricPath());
             nearestPathsChosenID_ = 0;  // TODO not hardcode
@@ -177,8 +179,10 @@ namespace ompl
                 OMPL_INFORM("ThunderRetrieveRepair: Path simplification took %f seconds and removed %d states",
                             simplifyTime, numStates - candidateSolution.getGeometricPath().getStateCount());
             }
+
             // Finished
             bool approximate = candidateSolution.isApproximate_;
+            
             pdef_->addSolutionPath(candidateSolution.path_, approximate, approxdif, getName());
             solved = true;
             return {solved, approximate};
