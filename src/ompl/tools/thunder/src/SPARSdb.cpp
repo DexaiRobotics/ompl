@@ -52,7 +52,6 @@
 #define foreach BOOST_FOREACH
 #define foreach_reverse BOOST_REVERSE_FOREACH
 
-
 // edgeWeightMap methods ////////////////////////////////////////////////////////////////////////////
 
 BOOST_CONCEPT_ASSERT(

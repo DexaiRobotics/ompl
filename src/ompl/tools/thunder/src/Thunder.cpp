@@ -45,7 +45,6 @@ namespace og = ompl::geometric;
 namespace ob = ompl::base;
 namespace ot = ompl::tools;
 
-
 ompl::tools::Thunder::Thunder(const base::SpaceInformationPtr &si, const double stretch_factor, const double DenseD,
                               const double SparseD)
   : ompl::tools::ExperienceSetup{si}, stretch_factor_{stretch_factor}, DenseD_{DenseD}, SparseD_{SparseD}
@@ -345,6 +344,7 @@ ompl::base::PlannerStatus ompl::tools::Thunder::solve(const base::PlannerTermina
         else
         {
             OMPL_INFORM("THUNDER RESULTS: From Scratch");
+
             // Logging
             log.result = "from_scratch";
 
@@ -527,6 +527,7 @@ bool ompl::tools::Thunder::doPostProcessing()
     {
         // Time to add a path to experience database
         double insertionTime;
+        
         experienceDB_->addPath(queuedSolutionPath, insertionTime);
         OMPL_INFORM("Finished inserting experience path in %f seconds", insertionTime);
         stats_.totalInsertionTime_ += insertionTime;  // used for averaging
