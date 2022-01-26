@@ -59,6 +59,7 @@
 #include <utility>
 #include <vector>
 #include <map>
+#include <optional>
 
 namespace ompl
 {
@@ -608,7 +609,7 @@ namespace ompl
 
             /** \brief Finds visible nodes in the graph near state */
             void findGraphNeighbors(base::State *state, std::vector<Vertex> &graphNeighborhood,
-                                    std::vector<Vertex> &visibleNeighborhood, double radius = -1);
+                                    std::vector<Vertex> &visibleNeighborhood, std::optional<double> radius = std::nullopt);
 
             /**
              * \brief Finds nodes in the graph near state NOTE: note tested for visibility
@@ -616,7 +617,7 @@ namespace ompl
              * \param result
              * \return false is no neighbors found
              */
-            bool findGraphNeighbors(const base::State *state, std::vector<Vertex> &graphNeighborhood, double radius = -1);
+            bool findGraphNeighbors(const base::State *state, std::vector<Vertex> &graphNeighborhood, std::optional<double> radius = std::nullopt);
 
             /** \brief Approaches the graph from a given vertex */
             void approachGraph(Vertex v);

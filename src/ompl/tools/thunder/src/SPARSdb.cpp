@@ -1285,11 +1285,11 @@ void ompl::geometric::SPARSdb::resetFailures()
 }
 
 void ompl::geometric::SPARSdb::findGraphNeighbors(base::State *st, std::vector<Vertex> &graphNeighborhood,
-                                                  std::vector<Vertex> &visibleNeighborhood, double radius)
+                                                  std::vector<Vertex> &visibleNeighborhood, std::optional<double> radius)
 {
     visibleNeighborhood.clear();
     stateProperty_[queryVertex_] = st;
-    if (radius < 0) radius = sparseDelta_;
+    if (!radius.has_value()) radius = sparseDelta_;
     nn_->nearestR(queryVertex_, radius, graphNeighborhood);
     if (verbose_ && false)
         OMPL_INFORM("Finding nearest nodes in NN tree within radius %f", radius);
@@ -1301,11 +1301,11 @@ void ompl::geometric::SPARSdb::findGraphNeighbors(base::State *st, std::vector<V
             visibleNeighborhood.push_back(i);
 }
 
-bool ompl::geometric::SPARSdb::findGraphNeighbors(const base::State *state, std::vector<Vertex> &graphNeighborhood, double radius)
+bool ompl::geometric::SPARSdb::findGraphNeighbors(const base::State *state, std::vector<Vertex> &graphNeighborhood, std::optional<double> radius)
 {
     base::State *stateCopy = si_->cloneState(state);
 
-    if (radius < 0) radius = sparseDelta_;
+    if (!radius.has_value()) radius = sparseDelta_;
     // Don't check for visibility
     graphNeighborhood.clear();
     stateProperty_[queryVertex_] = stateCopy;

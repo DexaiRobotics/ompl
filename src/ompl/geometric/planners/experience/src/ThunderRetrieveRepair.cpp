@@ -47,6 +47,7 @@
 
 #include <limits>
 #include <utility>
+#include <optional>
 
 namespace ompl
 {
