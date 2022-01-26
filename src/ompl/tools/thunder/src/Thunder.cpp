@@ -45,9 +45,6 @@ namespace og = ompl::geometric;
 namespace ob = ompl::base;
 namespace ot = ompl::tools;
 
-using hr_clock = std::chrono::high_resolution_clock;
-using chrono_ms = std::chrono::milliseconds;
-using std::chrono::duration_cast;
 
 ompl::tools::Thunder::Thunder(const base::SpaceInformationPtr &si, const double stretch_factor, const double DenseD,
                               const double SparseD)
@@ -305,7 +302,6 @@ ompl::base::PlannerStatus ompl::tools::Thunder::solve(const base::PlannerTermina
         }
         else if (getSolutionPlannerName() == rrPlanner_->getName())
         {
-            std::cout << "\nSolution is from recall!\n";
             OMPL_INFORM("THUNDER RESULTS: From Recall");
 
             // Stats
@@ -349,7 +345,6 @@ ompl::base::PlannerStatus ompl::tools::Thunder::solve(const base::PlannerTermina
         else
         {
             OMPL_INFORM("THUNDER RESULTS: From Scratch");
-            std::cout << "\nSolution is from scratch (RRTConnect)!\n";
             // Logging
             log.result = "from_scratch";
 
@@ -534,10 +529,7 @@ bool ompl::tools::Thunder::doPostProcessing()
     {
         // Time to add a path to experience database
         double insertionTime;
-        auto t_add_path {hr_clock::now()};
         experienceDB_->addPath(queuedSolutionPath, insertionTime);
-        auto delta_add_path {duration_cast<chrono_ms>(hr_clock::now() - t_add_path).count()};
-        pp_debug << "\nAdding path took " << delta_add_path << " ms.\n";
         OMPL_INFORM("Finished inserting experience path in %f seconds", insertionTime);
         stats_.totalInsertionTime_ += insertionTime;  // used for averaging
         double queued_path_length{queuedSolutionPath.length()};

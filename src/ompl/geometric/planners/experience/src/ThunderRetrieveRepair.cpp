@@ -49,9 +49,6 @@
 #include <utility>
 
 
-using hr_clock = std::chrono::high_resolution_clock;
-using chrono_ms = std::chrono::milliseconds;
-using std::chrono::duration_cast;
 
 namespace ompl
 {
@@ -132,7 +129,7 @@ namespace ompl
         {
             bool solved = false;
             double approxdif {0.0};
-            bool returnApproxSol {pdef_->getReturnApproximateSolutions()};
+            const bool returnApproxSol {pdef_->getReturnApproximateSolutions()};
             if (returnApproxSol)
                 approxdif = std::numeric_limits<double>::infinity();
             nearestPaths_.clear();
@@ -171,7 +168,6 @@ namespace ompl
             assert(candidateSolution.getStateCount() >= 4);
 
             // Smooth the result
-            // auto t_smoothing {hr_clock::now()};
             if (smoothingEnabled_)
             {
                 OMPL_INFORM("ThunderRetrieveRepair solve: Simplifying solution (smoothing)...");
