@@ -44,11 +44,8 @@
 #include "ompl/tools/config/MagicConstants.h"
 
 #include <thread>
-
 #include <limits>
 #include <utility>
-
-
 
 namespace ompl
 {

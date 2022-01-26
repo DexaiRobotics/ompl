@@ -520,8 +520,6 @@ ompl::tools::ThunderDBPtr ompl::tools::Thunder::getExperienceDB()
 
 bool ompl::tools::Thunder::doPostProcessing()
 {
-    std::ofstream pp_debug;
-    pp_debug.open("zzz_post_processing.txt", std::ios::app); 
     OMPL_INFORM("Performing post-processing");
     double shortest_path_length = getSolutionPath().length();
     auto solutionPathPtr{std::make_shared<ompl::geometric::PathGeometric>(getSpaceInformation())};
