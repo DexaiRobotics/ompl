@@ -425,7 +425,7 @@ namespace ompl
             }
 
             /** \brief Returns the flag that controls whether or not we accept approximate solutions */
-            bool acceptsApproximate() {
+            bool getAcceptApproximate() const {
                 return acceptApproximate_;
             }
 
