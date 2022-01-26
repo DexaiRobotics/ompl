@@ -208,6 +208,7 @@ bool ompl::geometric::SPARSdb::getSimilarPaths(int /*nearestK*/, const base::Sta
     }
     if (verbose_)
         OMPL_INFORM("Found %d nodes near start", startVertexCandidateNeighbors_.size());
+
     // Goal
     OMPL_INFORM("Looking for a node near the problem goal");
     if (!findGraphNeighbors(goal, goalVertexCandidateNeighbors_))
@@ -221,6 +222,7 @@ bool ompl::geometric::SPARSdb::getSimilarPaths(int /*nearestK*/, const base::Sta
     // Get paths between start and goal
     bool result =
         getPaths(startVertexCandidateNeighbors_, goalVertexCandidateNeighbors_, start, goal, candidateSolution, ptc);
+    
     // Error check
     if (!result)
     {
@@ -245,6 +247,7 @@ bool ompl::geometric::SPARSdb::getSimilarPaths(int /*nearestK*/, const base::Sta
             si_->printState(geometricSolution.getState(i), std::cout);
         }
     }
+
     return result;
 }
 
@@ -263,7 +266,7 @@ bool ompl::geometric::SPARSdb::getPaths(const std::vector<Vertex> &candidateStar
                 OMPL_WARN("FOUND CANDIDATE START THAT IS NOT VISIBLE ");
             continue;  // this is actually not visible
         }
-        
+
         foreach (Vertex goal, candidateGoals)
         {
             if (verbose_)
@@ -295,8 +298,10 @@ bool ompl::geometric::SPARSdb::getPaths(const std::vector<Vertex> &candidateStar
                 // Did not find a path
                 OMPL_INFORM("Did not find a path, looking for other start/goal combinations ");
             }
+
         }  // foreach
     }      // foreach
+
     return false;
 }
 
@@ -323,6 +328,7 @@ bool ompl::geometric::SPARSdb::lazyCollisionSearch(const Vertex &start, const Ve
             OMPL_INFORM("    Goal and start are not part of same component, skipping ");
         return false;
     }
+
     // TODO: remove this because start and goal are not either start nor goals
     if (!g->isStartGoalPairValid(stateProperty_[goal], stateProperty_[start]))
     {
@@ -402,6 +408,7 @@ bool ompl::geometric::SPARSdb::lazyCollisionSearch(const Vertex &start, const Ve
         }
         // else, loop with updated graph that has the invalid edges/states disabled
     }  // while
+
     // we never found a valid path
     return false;
 }
@@ -719,6 +726,7 @@ bool ompl::geometric::SPARSdb::addPathToRoadmap(const base::PlannerTerminationCo
                     OMPL_INFORM("Last state added to roadmap failed ");
                 }
             }
+
             // Now figure out midpoint state between lastState and i
             std::size_t midStateID = (i - lastStateID) / 2 + lastStateID;
             connectivityStateIDs.push_back(midStateID);
@@ -829,6 +837,7 @@ bool ompl::geometric::SPARSdb::addPathToRoadmap(const base::PlannerTerminationCo
         // Return the result of inserting into database, if applicable
         return checkStartGoalConnection(solutionPath);
     }
+
     return true;
 }
 
@@ -947,6 +956,7 @@ bool ompl::geometric::SPARSdb::addStateToRoadmap(const base::PlannerTerminationC
     /* The visible neighborhood set which has been most recently computed */
     std::vector<Vertex> visibleNeighborhood;
     std::vector<Vertex> vnbhd;
+
     ++iterations_;
 
     //@TODO - Ramy: Test if creating another nbhd to seperate recall from connectivity has positive effects.
@@ -1079,6 +1089,7 @@ bool ompl::geometric::SPARSdb::checkAddConnectivity(const base::State *qNew, std
 {
     // Identify visibile nodes around our new state that are unconnected (in different connected components)
     // and connect them
+
     std::vector<Vertex> statesInDiffConnectedComponents;  // links
     Vertex newVertex {};
     if (denseRoadmap_) {
@@ -1105,6 +1116,7 @@ bool ompl::geometric::SPARSdb::checkAddConnectivity(const base::State *qNew, std
                 }
             }
         }
+
         // Were any diconnected states found?
         if (statesInDiffConnectedComponents.size() > 0)
         {
@@ -1126,6 +1138,7 @@ bool ompl::geometric::SPARSdb::checkAddConnectivity(const base::State *qNew, std
                         connectGuards(newVertex, statesInDiffConnectedComponent);
                 }
             }
+
             return true;
         }
         else if (denseRoadmap_ && visibleNeighborhood.size() > 0) {

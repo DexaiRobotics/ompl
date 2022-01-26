@@ -183,6 +183,7 @@ namespace ompl
 
             // Finished
             bool approximate = candidateSolution.isApproximate_;
+
             pdef_->addSolutionPath(candidateSolution.path_, approximate, approxdif, getName());
 
             solved = true;

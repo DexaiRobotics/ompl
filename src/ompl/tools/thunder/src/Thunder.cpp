@@ -527,7 +527,7 @@ bool ompl::tools::Thunder::doPostProcessing()
     {
         // Time to add a path to experience database
         double insertionTime;
-        
+
         experienceDB_->addPath(queuedSolutionPath, insertionTime);
         OMPL_INFORM("Finished inserting experience path in %f seconds", insertionTime);
         stats_.totalInsertionTime_ += insertionTime;  // used for averaging
