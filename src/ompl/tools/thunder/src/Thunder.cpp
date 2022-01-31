@@ -109,7 +109,9 @@ void ompl::tools::Thunder::setup()
                 }
                 else if (planner_type_ == thunderPlanner::PLANNER_CFOREST)
                 {
-                    planner = std::make_shared<ompl::geometric::CForest>(si_);
+                    auto cforest_planner {std::make_shared<ompl::geometric::CForest>(si_)};
+                    cforest_planner->setNumThreads(cforest_n_threads_);
+                    planner = cforest_planner;
                 }
                 else
                 {
