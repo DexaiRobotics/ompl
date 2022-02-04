@@ -988,7 +988,7 @@ bool ompl::geometric::SPARSdb::addStateToRoadmap(const base::PlannerTerminationC
         {
             if (verbose_)
                 OMPL_INFORM(" --- checkAddInterface() Does this node's neighbor's need it to better connect them? ");
-            if (denseRoadmap_ || !checkAddInterface(qNew, graphNeighborhood, visibleNeighborhood)) // @TODO - Ramy: I think with the new changes this becomes unnecessary. Test without it and see.
+            if (!checkAddInterface(qNew, graphNeighborhood, visibleNeighborhood)) // @TODO - Ramy: I think with the new changes this becomes unnecessary. Test without it and see.
             {
                 if (verbose_)
                     OMPL_INFORM(" ---- Ensure SPARS asymptotic optimality");
@@ -1073,14 +1073,29 @@ ompl::base::PlannerStatus ompl::geometric::SPARSdb::solve(const base::PlannerTer
 
 bool ompl::geometric::SPARSdb::checkAddCoverage(const base::State *qNew, std::vector<Vertex> &visibleNeighborhood)
 {
-    if (visibleNeighborhood.size() > 0)
-        return false;
+    // if (visibleNeighborhood.size() > 0)
+    //     return false;
     // No free paths means we add for coverage
-    if (verbose_)
-        OMPL_INFORM(" --- Adding node for COVERAGE ");
-    Vertex v = addGuard(si_->cloneState(qNew), COVERAGE);
-    if (verbose_)
-        OMPL_INFORM("       Added vertex %f", v);
+    // if (verbose_)
+    //     OMPL_INFORM(" --- Adding node for COVERAGE ");
+    if (vnbhd.size() > 0) {
+        return false
+    }
+    else {
+        Vertex v = addGuard(si_->cloneState(qNew), COVERAGE);
+        for (auto neighbor : visibleNeighborhood) {
+            // If there's no edge between the two new states
+            // DTC: this should actually never happen - we just created the new vertex so
+            // why would it be connected to anything?
+            if (!boost::edge(v, neighbor, g_).second)
+            {
+                connectGuards(v, neighbor);
+            }
+        }
+    }
+    // if (verbose_)
+    //     OMPL_INFORM("       Added vertex %f", v);
+
 
     return true;
 }
