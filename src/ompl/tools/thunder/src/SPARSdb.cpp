@@ -430,7 +430,7 @@ bool ompl::geometric::SPARSdb::constructSolution(const Vertex start, const Verte
                             start,  // start state
                             [this, goal](const Vertex v)
                             {
-                                return 1.2 * distanceFunction(v, goal);
+                                return 2 * distanceFunction(v, goal);
                             },  // the heuristic
                             // ability to disable edges (set cost to inifinity):
                             boost::weight_map(edgeWeightMap(g_, edgeCollisionStateProperty_))
@@ -974,6 +974,7 @@ bool ompl::geometric::SPARSdb::addStateToRoadmap(const base::PlannerTerminationC
         findGraphNeighbors(qNew, gnbhd, vnbhd, granularity_);
     auto delta_small {duration_cast<chrono_ms>(hr_clock::now() - t_small).count()};
     if (vnbhd.size()) {
+        logs << "Node NOT added\n";
         return false;
     }
     auto t_nbrs {hr_clock::now()};
@@ -1111,7 +1112,6 @@ bool ompl::geometric::SPARSdb::checkAddCoverage(const base::State *qNew, std::ve
         // DTC: this should actually never happen - we just created the new vertex so
         // why would it be connected to anything?
         if (!boost::edge(v, neighbor, g_).second) {
-            std::cout << "\n\n\n edge added \n\n\n";
             connectGuards(v, neighbor);
         }
     } 
