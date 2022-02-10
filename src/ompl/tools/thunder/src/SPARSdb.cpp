@@ -1051,9 +1051,8 @@ bool ompl::geometric::SPARSdb::addStateToRoadmap(const base::PlannerTerminationC
         stateAdded = true;
     }
 
-    if (!stateAdded) {
+    if (!stateAdded)
         ++consecutiveFailures_;
-    }
 
     si_->freeState(workState);
     si_->freeState(qNew);
@@ -1083,7 +1082,6 @@ bool ompl::geometric::SPARSdb::checkAddCoverage(const base::State *qNew, std::ve
     // No free paths means we add for coverage
     if (verbose_)
         OMPL_INFORM(" --- Adding node for COVERAGE ");
-
     Vertex v = addGuard(si_->cloneState(qNew), COVERAGE);
     for (auto neighbor : visibleNeighborhood) {
         // If there's no edge between the two new states
