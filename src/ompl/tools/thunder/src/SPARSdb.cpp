@@ -960,7 +960,7 @@ bool ompl::geometric::SPARSdb::addStateToRoadmap(const base::PlannerTerminationC
     ++iterations_;
 
     if (denseRoadmap_) {
-        findGraphNeighbors(qNew, gnbhd, vnbhd, granularity_);
+        findGraphNeighbors(qNew, gnbhd, vnbhd, granularity_); //this added call to findGraphNeighbors is very inexpensive when granularity is small enough (which it is meant to be).
         if (vnbhd.size()) {
             return false;
         }
