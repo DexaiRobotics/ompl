@@ -52,9 +52,6 @@
 #define foreach BOOST_FOREACH
 #define foreach_reverse BOOST_REVERSE_FOREACH
 
-using hr_clock = std::chrono::high_resolution_clock;
-using chrono_ms = std::chrono::milliseconds;
-using std::chrono::duration_cast;
 // edgeWeightMap methods ////////////////////////////////////////////////////////////////////////////
 
 BOOST_CONCEPT_ASSERT(
@@ -644,9 +641,6 @@ bool ompl::geometric::SPARSdb::getGuardSpacingFactor(const double pathLength, in
 bool ompl::geometric::SPARSdb::addPathToRoadmap(const base::PlannerTerminationCondition &ptc,
                                                 ompl::geometric::PathGeometric &solutionPath)
 {
-    std::ofstream logs;
-    logs.open("zzz_adding_paths.txt", std::ios::app);
-    auto t_path {hr_clock::now()}; 
     // Check that the query vertex is initialized (used for internal nearest neighbor searches)
     checkQueryStateInitialization();
 
@@ -835,7 +829,7 @@ bool ompl::geometric::SPARSdb::addPathToRoadmap(const base::PlannerTerminationCo
         addStateToRoadmap(ptc, solutionPath.getState(shuffledID));
     }
 
-    bool benchmarkLogging = false;
+    bool benchmarkLogging = true;
     if (benchmarkLogging)
     {
         OMPL_DEBUG("ompl::geometric::SPARSdb: Benchmark logging enabled (slower)");
@@ -843,9 +837,7 @@ bool ompl::geometric::SPARSdb::addPathToRoadmap(const base::PlannerTerminationCo
         // Return the result of inserting into database, if applicable
         return checkStartGoalConnection(solutionPath);
     }
-    auto delta_path {duration_cast<chrono_ms>(hr_clock::now() - t_path).count()};
-    logs << "Adding path to the db took " << delta_path << " ms.\n";
-    logs.close();
+
     return true;
 }
 
@@ -950,8 +942,6 @@ bool ompl::geometric::SPARSdb::checkStartGoalConnection(ompl::geometric::PathGeo
 bool ompl::geometric::SPARSdb::addStateToRoadmap(const base::PlannerTerminationCondition &ptc, base::State *newState)
 {
     bool stateAdded = false;
-    std::ofstream logs;
-    logs.open("zzz_add_state.txt", std::ios::app);
     // Check that the query vertex is initialized (used for internal nearest neighbor searches)
     checkQueryStateInitialization();
 
@@ -969,19 +959,15 @@ bool ompl::geometric::SPARSdb::addStateToRoadmap(const base::PlannerTerminationC
 
     ++iterations_;
 
-    auto t_small {hr_clock::now()};
-    if (denseRoadmap_)
+    if (denseRoadmap_) {
         findGraphNeighbors(qNew, gnbhd, vnbhd, granularity_);
-    auto delta_small {duration_cast<chrono_ms>(hr_clock::now() - t_small).count()};
-    if (vnbhd.size()) {
-        logs << "Node NOT added\n";
-        return false;
+        if (vnbhd.size()) {
+            return false;
+        }
     }
-    auto t_nbrs {hr_clock::now()};
+
     //@TODO - Ramy: Test if creating another nbhd to seperate recall from connectivity has positive effects.
     findGraphNeighbors(qNew, graphNeighborhood, visibleNeighborhood);
-    auto delta_nbrs {duration_cast<chrono_ms>(hr_clock::now() - t_nbrs).count()};
-    logs << "Finding neighbors took " << delta_nbrs << " ms. Out of which " << delta_small << " ms were for small nbhd.\n";
     if (verbose_)
     {
         OMPL_INFORM(" graph neighborhood: %d | visible neighborhood: %d", graphNeighborhood.size(),
@@ -996,8 +982,6 @@ bool ompl::geometric::SPARSdb::addStateToRoadmap(const base::PlannerTerminationC
     if (verbose_)
         OMPL_INFORM(" - checkAddCoverage() Are other nodes around it visible?");
     // Coverage criterion
-    auto t_adding {hr_clock::now()};
-    auto delta_adding {duration_cast<chrono_ms>(hr_clock::now() - t_adding).count()};
     if (!checkAddCoverage(qNew,
                           visibleNeighborhood))  // Always add a node if no other nodes around it are visible (GUARD)
     {
@@ -1054,33 +1038,25 @@ bool ompl::geometric::SPARSdb::addStateToRoadmap(const base::PlannerTerminationC
             }
             else  //  added for interface
             {
-                delta_adding = duration_cast<chrono_ms>(hr_clock::now() - t_adding).count();
-                logs << "Node added for INTERFACE and this took " << delta_adding << " ms.\n";
                 stateAdded = true;
             }
         }
         else  // added for connectivity
         {
-            delta_adding = duration_cast<chrono_ms>(hr_clock::now() - t_adding).count();
-            logs << "Node added for CONNECTIVITY and this took " << delta_adding << " ms.\n";
             stateAdded = true;
         }
     }
     else  // added for coverage
     {
-        delta_adding = duration_cast<chrono_ms>(hr_clock::now() - t_adding).count();
-        logs << "Node added for COVERAGE and this took " << delta_adding << " ms.\n";
         stateAdded = true;
     }
 
-    if (!stateAdded) {
+    if (!stateAdded)
         ++consecutiveFailures_;
-        delta_adding = duration_cast<chrono_ms>(hr_clock::now() - t_adding).count();
-        logs << "Node NOT added and this took " << delta_adding << " ms.\n";
-    }
+
     si_->freeState(workState);
     si_->freeState(qNew);
-    logs.close();
+
     return stateAdded;
 }
 
@@ -1101,11 +1077,11 @@ ompl::base::PlannerStatus ompl::geometric::SPARSdb::solve(const base::PlannerTer
 
 bool ompl::geometric::SPARSdb::checkAddCoverage(const base::State *qNew, std::vector<Vertex> &visibleNeighborhood)
 {
-    // if (visibleNeighborhood.size() > 0)
-    //     return false;
+    if (visibleNeighborhood.size() > 0)
+        return false;
     // No free paths means we add for coverage
-    // if (verbose_)
-    //     OMPL_INFORM(" --- Adding node for COVERAGE ");
+    if (verbose_)
+        OMPL_INFORM(" --- Adding node for COVERAGE ");
     Vertex v = addGuard(si_->cloneState(qNew), COVERAGE);
     for (auto neighbor : visibleNeighborhood) {
         // If there's no edge between the two new states
@@ -1114,9 +1090,11 @@ bool ompl::geometric::SPARSdb::checkAddCoverage(const base::State *qNew, std::ve
         if (!boost::edge(v, neighbor, g_).second) {
             connectGuards(v, neighbor);
         }
-    } 
-    // if (verbose_)
-    //     OMPL_INFORM("       Added vertex %f", v);
+    }
+
+    if (verbose_)
+        OMPL_INFORM("       Added vertex %f", v);
+
     return true;
 }
 
