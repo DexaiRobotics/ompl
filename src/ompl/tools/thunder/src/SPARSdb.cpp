@@ -1084,7 +1084,7 @@ bool ompl::geometric::SPARSdb::checkAddCoverage(const base::State *qNew, std::ve
     if (verbose_)
         OMPL_INFORM(" --- Adding node for COVERAGE ");
     Vertex v = addGuard(si_->cloneState(qNew), COVERAGE);
-    for (const auto neighbor : visibleNeighborhood) {
+    for (const auto &neighbor : visibleNeighborhood) {
         // If there's no edge between the two new states
         // DTC: this should actually never happen - we just created the new vertex so
         // why would it be connected to anything?
