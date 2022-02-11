@@ -829,7 +829,7 @@ namespace ompl
             std::vector<Vertex> startVertexCandidateNeighbors_;
             std::vector<Vertex> goalVertexCandidateNeighbors_;
 
-            double heuristicScaling_ {1.0};
+            double heuristicScaling_ {1.2};
 
             /** \brief Option to enable debugging output */
             bool verbose_{false};
