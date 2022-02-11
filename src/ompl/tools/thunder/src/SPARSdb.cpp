@@ -960,6 +960,7 @@ bool ompl::geometric::SPARSdb::addStateToRoadmap(const base::PlannerTerminationC
     ++iterations_;
 
     if (denseRoadmap_) {
+        //this added call to findGraphNeighbors is very inexpensive when granularity is small enough (which it is meant to be).
         findGraphNeighbors(qNew, gnbhd, vnbhd, granularity_);
         if (vnbhd.size()) {
             return false;
@@ -1083,7 +1084,7 @@ bool ompl::geometric::SPARSdb::checkAddCoverage(const base::State *qNew, std::ve
     if (verbose_)
         OMPL_INFORM(" --- Adding node for COVERAGE ");
     Vertex v = addGuard(si_->cloneState(qNew), COVERAGE);
-    for (auto neighbor : visibleNeighborhood) {
+    for (const auto neighbor : visibleNeighborhood) {
         // If there's no edge between the two new states
         // DTC: this should actually never happen - we just created the new vertex so
         // why would it be connected to anything?
