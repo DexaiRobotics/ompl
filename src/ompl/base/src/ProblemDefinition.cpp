@@ -75,7 +75,13 @@ namespace ompl
             std::vector<PlannerSolution> getSolutions()
             {
                 std::lock_guard<std::mutex> slock(lock_);
-                std::vector<PlannerSolution> copy = solutions_;
+                // std::vector<PlannerSolution> copy = solutions_;
+                std::vector<PlannerSolution> copy;
+                for (size_t i {0}; i < solutions_.size(); i++)
+                {
+                    PlannerSolution sol (solutions_[i].path_, solutions_[i].cost_, solutions_[i].opt_);
+                    copy.push_back(sol);
+                }
                 return copy;
             }
 

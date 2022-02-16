@@ -76,6 +76,22 @@ namespace ompl
             {
             }
 
+            PlannerSolution(const PathPtr &path, const Cost cost, const OptimizationObjectivePtr &opt)
+              : path_(path)
+              , length_(path ? path->length() : std::numeric_limits<double>::infinity())
+            {
+                cost_ = cost;
+                opt_ = opt;
+            }
+            
+            // PlannerSolution &operator=(const PlannerSolution & p)
+            // {   
+            //     path_ = p.path_;
+            //     cost_ = p.cost_;
+            //     opt_ = p.opt_;
+            //     length_ = p.path_ ? p.path_->length() : std::numeric_limits<double>::infinity();
+            // }
+            
             /** \brief Return true if two solutions are the same */
             bool operator==(const PlannerSolution &p) const
             {
