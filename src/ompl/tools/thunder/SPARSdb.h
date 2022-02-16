@@ -740,6 +740,11 @@ namespace ompl
                 return si_->distance(stateProperty_[a], stateProperty_[b]);
             }
 
+            double costFunction(const Vertex a, const Vertex b) const
+            {
+                return pdef_->getOptimizationObjective()->motionCost(stateProperty_[a], stateProperty_[b]).value();
+            }
+
             /** \brief Sampler user for generating valid samples in the state space */
             base::ValidStateSamplerPtr sampler_;
 
