@@ -168,14 +168,14 @@ namespace ompl
             assert(candidateSolution.getStateCount() >= 4);
 
             // Smooth the result
-            if (smoothingEnabled_)
+            if (true || smoothingEnabled_)
             {
                 OMPL_INFORM("ThunderRetrieveRepair solve: Simplifying solution (smoothing)...");
                 time::point simplifyStart = time::now();
                 std::size_t numStates = candidateSolution.getGeometricPath().getStateCount();
                 // ompl::geometric::PathGeometric pg = candidateSolution.getGeometricPath(); // TODO do not copy to new
                 // type
-                path_simplifier_->simplify(candidateSolution.getGeometricPath(), ptc);
+                path_simplifier_->simplifyMax(candidateSolution.getGeometricPath());
                 double simplifyTime = time::seconds(time::now() - simplifyStart);
                 OMPL_INFORM("ThunderRetrieveRepair: Path simplification took %f seconds and removed %d states",
                             simplifyTime, numStates - candidateSolution.getGeometricPath().getStateCount());

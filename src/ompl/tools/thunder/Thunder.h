@@ -111,6 +111,7 @@ namespace ompl
             double SparseD_{};
             size_t n_parallel_plans_{0};
             size_t cforest_n_threads_{0};
+            bool enable_smoothing_ {false};
 
         public:
             /** \brief Display debug data about potential available solutions */
@@ -279,6 +280,16 @@ namespace ompl
 
             bool getSavePlansFromRecall() {
                 return savePlansFromRecall_;
+            }
+
+            void setEnableSmoothing(const double enable_smoothing)
+            {
+                enable_smoothing_ = enable_smoothing;
+            }
+
+            bool getEnableSmoothing() const
+            {
+                return enable_smoothing_;
             }
 
         protected:

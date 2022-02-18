@@ -160,7 +160,7 @@ void ompl::geometric::SimpleSetup::simplifySolution(const base::PlannerTerminati
             auto &path = static_cast<PathGeometric &>(*p);
             std::size_t numStates = path.getStateCount();
             OMPL_DEBUG("SimpleSetup: starting simplifySolution with %d states", numStates); 
-            psk_->simplify(path, ptc);
+            psk_->simplifyMax(path);
             simplifyTime_ = time::seconds(time::now() - start);
             OMPL_INFORM("SimpleSetup: Path simplification took %f seconds and changed from %d to %d states",
                         simplifyTime_, numStates, path.getStateCount());
