@@ -433,6 +433,11 @@ namespace ompl
                 heuristicScaling_ = heuristicScaling;
             }
 
+            void setUseCostInRoadmap(const bool useCostInRoadmap)
+            {
+                useCostInRoadmap_ = useCostInRoadmap;
+            }
+
             /** \brief Retrieve the maximum consecutive failure limit. */
             unsigned int getMaxFailures() const
             {
@@ -475,6 +480,11 @@ namespace ompl
             double getHeuristicScaling() const
             {
                 return heuristicScaling_;
+            }
+
+            bool getUseCostInRoadmap() const
+            {
+                return useCostInRoadmap_;
             }
 
             bool getGuardSpacingFactor(double pathLength, double &numGuards, double &spacingFactor);
@@ -740,6 +750,11 @@ namespace ompl
                 return si_->distance(stateProperty_[a], stateProperty_[b]);
             }
 
+            double costFunction(const Vertex a, const Vertex b) const
+            {
+                return pdef_->getOptimizationObjective()->motionCost(stateProperty_[a], stateProperty_[b]).value();
+            }
+
             /** \brief Sampler user for generating valid samples in the state space */
             base::ValidStateSamplerPtr sampler_;
 
@@ -824,6 +839,9 @@ namespace ompl
 
             /** \brief Flag to indicate wheter or not we do collision checking for paths retrieved from the database */
             bool collisionCheckOnRecall_ {false};
+
+            /** \brief Toggles using custom cost function as edge weight in roadmap as opposed to just path length */
+            bool useCostInRoadmap_ {false};
 
             /** \brief Used by getSimilarPaths */
             std::vector<Vertex> startVertexCandidateNeighbors_;
