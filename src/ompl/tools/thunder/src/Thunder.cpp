@@ -70,7 +70,7 @@ void ompl::tools::Thunder::initialize()
 
     // Load the Retrieve repair database. We do it here so that setRepairPlanner() works
     rrPlanner_ = std::make_shared<og::ThunderRetrieveRepair>(si_, experienceDB_);
-    getRetrieveRepairPlanner()->enableSmoothing(enable_smoothing_);
+    // getRetrieveRepairPlanner()->enableSmoothing(enable_smoothing_);
     OMPL_INFORM("Thunder Framework initialized.");
 }
 
