@@ -175,7 +175,7 @@ namespace ompl
                 std::size_t numStates = candidateSolution.getGeometricPath().getStateCount();
                 // ompl::geometric::PathGeometric pg = candidateSolution.getGeometricPath(); // TODO do not copy to new
                 // type
-                path_simplifier_->simplifyMax(candidateSolution.getGeometricPath());
+                path_simplifier_->simplify(candidateSolution.getGeometricPath(), 1, true);
                 double simplifyTime = time::seconds(time::now() - simplifyStart);
                 OMPL_INFORM("ThunderRetrieveRepair: Path simplification took %f seconds and removed %d states",
                             simplifyTime, numStates - candidateSolution.getGeometricPath().getStateCount());
