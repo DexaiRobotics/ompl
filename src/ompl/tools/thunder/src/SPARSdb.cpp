@@ -1683,9 +1683,9 @@ void ompl::geometric::SPARSdb::connectGuards(Vertex v, Vertex vp)
     Edge e = (boost::add_edge(v, vp, g_)).first;
 
     // Add associated properties to the edge
-    if (useCostInRoadmap_) {
+    if (edgeWeights_ == COST_OBJECTIVE) {
         edgeWeightProperty_[e] = costFunction(v, vp);  // TODO: use this value with astar
-    } else {
+    } else if (edgeWeights_ == PATH_LENGTH) {
         edgeWeightProperty_[e] = distanceFunction(v, vp);  // TODO: use this value with astar
     }
     edgeCollisionStateProperty_[e] = NOT_CHECKED;

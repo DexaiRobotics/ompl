@@ -97,6 +97,12 @@ namespace ompl
                 QUALITY,
             };
 
+            enum EdgeWeightsInRoadmap
+            {
+                COST_OBJECTIVE,
+                PATH_LENGTH,
+            };
+
             ////////////////////////////////////////////////////////////////////////////////////////
             // BOOST GRAPH DETAILS
             ////////////////////////////////////////////////////////////////////////////////////////
@@ -433,9 +439,9 @@ namespace ompl
                 heuristicScaling_ = heuristicScaling;
             }
 
-            void setUseCostInRoadmap(const bool useCostInRoadmap)
+            void setEdgeWeightsInRoadmap(const EdgeWeightsInRoadmap weights)
             {
-                useCostInRoadmap_ = useCostInRoadmap;
+                edgeWeights_ = weights;
             }
 
             /** \brief Retrieve the maximum consecutive failure limit. */
@@ -482,9 +488,9 @@ namespace ompl
                 return heuristicScaling_;
             }
 
-            bool getUseCostInRoadmap() const
+            EdgeWeightsInRoadmap getEdgeWeightsInRoadmap() const
             {
-                return useCostInRoadmap_;
+                return edgeWeights_;
             }
 
             bool getGuardSpacingFactor(double pathLength, double &numGuards, double &spacingFactor);
@@ -842,6 +848,8 @@ namespace ompl
 
             /** \brief Toggles using custom cost function as edge weight in roadmap as opposed to just path length */
             bool useCostInRoadmap_ {false};
+
+            EdgeWeightsInRoadmap edgeWeights_ {PATH_LENGTH};
 
             /** \brief Used by getSimilarPaths */
             std::vector<Vertex> startVertexCandidateNeighbors_;
