@@ -96,7 +96,8 @@ namespace ompl
                 INTERFACE,
                 QUALITY,
             };
-
+            
+            /** \brief Controls which edge weight function we are using */
             enum EdgeWeightsInRoadmap
             {
                 COST_OBJECTIVE,
@@ -439,9 +440,9 @@ namespace ompl
                 heuristicScaling_ = heuristicScaling;
             }
 
-            void setEdgeWeightsInRoadmap(const EdgeWeightsInRoadmap weights)
+            void setEdgeWeightsInRoadmap(const EdgeWeightsInRoadmap edgeWeights)
             {
-                edgeWeights_ = weights;
+                edgeWeights_ = edgeWeights;
             }
 
             /** \brief Retrieve the maximum consecutive failure limit. */
@@ -846,9 +847,7 @@ namespace ompl
             /** \brief Flag to indicate wheter or not we do collision checking for paths retrieved from the database */
             bool collisionCheckOnRecall_ {false};
 
-            /** \brief Toggles using custom cost function as edge weight in roadmap as opposed to just path length */
-            bool useCostInRoadmap_ {false};
-
+            /** \brief Controls which edge weight function we are using */
             EdgeWeightsInRoadmap edgeWeights_ {PATH_LENGTH};
 
             /** \brief Used by getSimilarPaths */
