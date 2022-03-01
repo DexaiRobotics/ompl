@@ -1684,7 +1684,7 @@ void ompl::geometric::SPARSdb::connectGuards(Vertex v, Vertex vp)
 
     // Add associated properties to the edge
     if (useCostInRoadmap_) {
-        edgeWeightProperty_[e] = costFunction(v, vp);  // TODO: use this value with astar
+        edgeWeightProperty_[e] = costFunction(v, vp) + 0.2;  // TODO: use this value with astar
     } else {
         edgeWeightProperty_[e] = distanceFunction(v, vp);  // TODO: use this value with astar
     }
