@@ -96,13 +96,6 @@ namespace ompl
                 INTERFACE,
                 QUALITY,
             };
-            
-            /** \brief Controls which edge weight function we are using */
-            enum EdgeWeightsInRoadmap
-            {
-                COST_OBJECTIVE,
-                PATH_LENGTH,
-            };
 
             ////////////////////////////////////////////////////////////////////////////////////////
             // BOOST GRAPH DETAILS
@@ -440,11 +433,6 @@ namespace ompl
                 heuristicScaling_ = heuristicScaling;
             }
 
-            void setEdgeWeightsInRoadmap(const EdgeWeightsInRoadmap edgeWeights)
-            {
-                edgeWeights_ = edgeWeights;
-            }
-
             /** \brief Retrieve the maximum consecutive failure limit. */
             unsigned int getMaxFailures() const
             {
@@ -487,11 +475,6 @@ namespace ompl
             double getHeuristicScaling() const
             {
                 return heuristicScaling_;
-            }
-
-            EdgeWeightsInRoadmap getEdgeWeightsInRoadmap() const
-            {
-                return edgeWeights_;
             }
 
             bool getGuardSpacingFactor(double pathLength, double &numGuards, double &spacingFactor);
@@ -759,7 +742,7 @@ namespace ompl
 
             double costFunction(const Vertex a, const Vertex b) const
             {
-                return pdef_->getOptimizationObjective()->motionCost(stateProperty_[a], stateProperty_[b]).value();
+                return pdef_->getOptimizationObjective() ? pdef_->getOptimizationObjective()->motionCost(stateProperty_[a], stateProperty_[b]).value() : distanceFunction(a, b);
             }
 
             /** \brief Sampler user for generating valid samples in the state space */
@@ -846,9 +829,6 @@ namespace ompl
 
             /** \brief Flag to indicate wheter or not we do collision checking for paths retrieved from the database */
             bool collisionCheckOnRecall_ {false};
-
-            /** \brief Controls which edge weight function we are using */
-            EdgeWeightsInRoadmap edgeWeights_ {PATH_LENGTH};
 
             /** \brief Used by getSimilarPaths */
             std::vector<Vertex> startVertexCandidateNeighbors_;
