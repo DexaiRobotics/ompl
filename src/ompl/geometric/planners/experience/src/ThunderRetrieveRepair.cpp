@@ -168,7 +168,7 @@ namespace ompl
             assert(candidateSolution.getStateCount() >= 4);
 
             // Smooth the result
-            if (smoothingEnabled_)
+            if (true || smoothingEnabled_)
             {
                 OMPL_INFORM("ThunderRetrieveRepair solve: Simplifying solution (smoothing)...");
                 time::point simplifyStart = time::now();
