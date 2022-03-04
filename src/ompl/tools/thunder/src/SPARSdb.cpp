@@ -1795,9 +1795,7 @@ void ompl::geometric::SPARSdb::getPlannerData(base::PlannerData &data) const
 
             // TODO save weights!
             data.addEdge(base::PlannerDataVertex(stateProperty_[v1], (int)colorProperty_[v1]),
-                         base::PlannerDataVertex(stateProperty_[v2], (int)colorProperty_[v2]),
-                         base::PlannerDataEdge(),
-                         ompl::base::Cost(edgeWeightProperty_[e]));
+                         base::PlannerDataVertex(stateProperty_[v2], (int)colorProperty_[v2]));
 
             // OMPL_INFORM("Adding edge from vertex of type %d to vertex of type %d", colorProperty_[v1],
             // colorProperty_[v2]);
