@@ -962,9 +962,9 @@ bool ompl::geometric::SPARSdb::addStateToRoadmap(const base::PlannerTerminationC
     if (denseRoadmap_) {
         //this added call to findGraphNeighbors is very inexpensive when granularity is small enough (which it is meant to be).
         findGraphNeighbors(qNew, gnbhd, vnbhd, granularity_);
-        if (vnbhd.size()) {
-            return false;
-        }
+        // if (vnbhd.size()) {
+        //     return false;
+        // }
     }
 
     //@TODO - Ramy: Test if creating another nbhd to seperate recall from connectivity has positive effects.
@@ -983,7 +983,7 @@ bool ompl::geometric::SPARSdb::addStateToRoadmap(const base::PlannerTerminationC
     if (verbose_)
         OMPL_INFORM(" - checkAddCoverage() Are other nodes around it visible?");
     // Coverage criterion
-    if (!checkAddCoverage(qNew,
+    if (vnbhd.size() || !checkAddCoverage(qNew,
                           visibleNeighborhood))  // Always add a node if no other nodes around it are visible (GUARD)
     {
         if (verbose_)
@@ -1078,8 +1078,8 @@ ompl::base::PlannerStatus ompl::geometric::SPARSdb::solve(const base::PlannerTer
 
 bool ompl::geometric::SPARSdb::checkAddCoverage(const base::State *qNew, std::vector<Vertex> &visibleNeighborhood)
 {
-    if (visibleNeighborhood.size() > 0)
-        return false;
+    // if (visibleNeighborhood.size() > 0)
+    //     return false;
     // No free paths means we add for coverage
     if (verbose_)
         OMPL_INFORM(" --- Adding node for COVERAGE ");
@@ -1106,7 +1106,7 @@ bool ompl::geometric::SPARSdb::checkAddConnectivity(const base::State *qNew, std
 
     std::vector<Vertex> statesInDiffConnectedComponents;  // links
     Vertex newVertex {};
-    if (denseRoadmap_) {
+    if (false && denseRoadmap_) {
         newVertex = addGuard(si_->cloneState(qNew), COVERAGE);
         if (visibleNeighborhood.size() == 1)
         {
@@ -1137,7 +1137,7 @@ bool ompl::geometric::SPARSdb::checkAddConnectivity(const base::State *qNew, std
             if (verbose_)
                 OMPL_INFORM(" --- Adding node for CONNECTIVITY ");
             // Add the node
-            if (!denseRoadmap_)
+            if (true || !denseRoadmap_)
                 newVertex = addGuard(si_->cloneState(qNew), CONNECTIVITY);
 
             for (unsigned long statesInDiffConnectedComponent : statesInDiffConnectedComponents)
@@ -1155,7 +1155,7 @@ bool ompl::geometric::SPARSdb::checkAddConnectivity(const base::State *qNew, std
 
             return true;
         }
-        else if (denseRoadmap_ && visibleNeighborhood.size() > 0) {
+        else if (false && denseRoadmap_ && visibleNeighborhood.size() > 0) {
             if (!sameComponent(visibleNeighborhood[0], newVertex))
             connectGuards(newVertex, visibleNeighborhood[0]);
         }
