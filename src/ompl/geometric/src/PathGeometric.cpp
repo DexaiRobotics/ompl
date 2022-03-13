@@ -97,6 +97,7 @@ ompl::base::Cost ompl::geometric::PathGeometric::cost(const base::OptimizationOb
     for (std::size_t i = 1; i < states_.size(); ++i)
         cost = opt->combineCosts(cost, opt->motionCost(states_[i - 1], states_[i]));
     cost = opt->combineCosts(cost, opt->terminalCost(states_.back()));
+    cost = opt->combineCosts(cost, ompl::base::Cost(smoothness()));
     return cost;
 }
 
