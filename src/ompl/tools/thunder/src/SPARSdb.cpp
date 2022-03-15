@@ -1075,14 +1075,14 @@ ompl::base::PlannerStatus ompl::geometric::SPARSdb::solve(const base::PlannerTer
 
 bool ompl::geometric::SPARSdb::checkAddCoverage(const base::State *qNew, std::vector<Vertex> &visibleNeighborhood)
 {
-    if (!denseRoadmap && visibleNeighborhood.size() > 0)
+    if (!denseRoadmap_ && visibleNeighborhood.size() > 0)
         return false;
     // No free paths means we add for coverage
     if (verbose_)
         OMPL_INFORM(" --- Adding node for COVERAGE ");
     Vertex v = addGuard(si_->cloneState(qNew), COVERAGE);
 
-    if (denseRoadmap) {
+    if (denseRoadmap_) {
         for (const auto &neighbor : visibleNeighborhood) {
             // If there's no edge between the two new states
             // DTC: this should actually never happen - we just created the new vertex so
