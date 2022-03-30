@@ -1072,9 +1072,16 @@ double ompl::base::CompoundStateSpace::distance(const State *state1, const State
     double dist = 0.0;
     // We compute L2 distance here instead of L1 distance. This in theory should encourage the robot to move joints simultaneously as opposed to one at a time.
     // @TODO - Ramy: Write a unit test that shows that this makes a difference.
-    for (unsigned int i = 0; i < componentCount_; ++i)
-        dist += weights_[i] * std::pow(components_[i]->distance(cstate1->components[i], cstate2->components[i]), 2);
-    return std::sqrt(dist);
+    double max_dist {0.0};
+    for (unsigned int i = 0; i < componentCount_; ++i) {
+        auto local_dist {components_[i]->distance(cstate1->components[i], cstate2->components[i])};
+        dist += weights_[i] * local_dist;
+        if (local_dist > max_dist) {
+            max_dist = local_dist;
+        }
+    }
+    auto result {dist + max_dist};
+    return result;
 }
 
 void ompl::base::CompoundStateSpace::setLongestValidSegmentFraction(double segmentFraction)
