@@ -433,6 +433,11 @@ namespace ompl
                 heuristicScaling_ = heuristicScaling;
             }
 
+            void setFixedEdgeCost(const double fixed_edge_cost)
+            {
+                fixed_edge_cost_ = fixed_edge_cost;
+            }
+
             void setUseCostInRoadmap_(const bool useCostInRoadmap)
             {
                 useCostInRoadmap_ = useCostInRoadmap;
@@ -481,6 +486,12 @@ namespace ompl
             {
                 return heuristicScaling_;
             }
+
+            double getFixedEdgeCost() const
+            {
+                return fixed_edge_cost_;
+            }
+
 
             bool getUseCostInRoadmap_() const
             {
@@ -752,7 +763,7 @@ namespace ompl
 
             double costFunction(const Vertex a, const Vertex b) const
             {
-                return useCostInRoadmap_ && pdef_->getOptimizationObjective() ? pdef_->getOptimizationObjective()->motionCost(stateProperty_[a], stateProperty_[b]).value() : distanceFunction(a, b);
+                return useCostInRoadmap_ && pdef_->getOptimizationObjective() ? pdef_->getOptimizationObjective()->motionCost(stateProperty_[a], stateProperty_[b]).value() : distanceFunction(a, b) + fixed_edge_cost_;
             }
 
             /** \brief Sampler user for generating valid samples in the state space */
@@ -845,6 +856,8 @@ namespace ompl
             std::vector<Vertex> goalVertexCandidateNeighbors_;
 
             double heuristicScaling_ {1.0};
+
+            double fixed_edge_cost_ {0.0};
 
             bool useCostInRoadmap_ {false};
 
