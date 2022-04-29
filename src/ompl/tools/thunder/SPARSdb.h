@@ -433,9 +433,14 @@ namespace ompl
                 heuristicScaling_ = heuristicScaling;
             }
 
-            void setUseCostInRoadmap_(const bool useCostInRoadmap)
+            void setUseCostInRoadmap(const bool useCostInRoadmap)
             {
                 useCostInRoadmap_ = useCostInRoadmap;
+            }
+
+            void setPathSamplingFactor(const int pathSamplingFactor)
+            {
+                pathSamplingFactor_ = pathSamplingFactor;
             }
 
             /** \brief Retrieve the maximum consecutive failure limit. */
@@ -482,9 +487,14 @@ namespace ompl
                 return heuristicScaling_;
             }
 
-            bool getUseCostInRoadmap_() const
+            bool getUseCostInRoadmap() const
             {
                 return useCostInRoadmap_;
+            }
+
+            int getPathSamplingFactor() const
+            {
+                return pathSamplingFactor_;
             }
 
             bool getGuardSpacingFactor(double pathLength, double &numGuards, double &spacingFactor);
@@ -845,6 +855,8 @@ namespace ompl
             std::vector<Vertex> goalVertexCandidateNeighbors_;
 
             double heuristicScaling_ {1.0};
+
+            int pathSamplingFactor_ {1.0};
 
             bool useCostInRoadmap_ {false};
 

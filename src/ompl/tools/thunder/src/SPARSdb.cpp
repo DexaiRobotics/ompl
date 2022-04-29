@@ -658,7 +658,7 @@ bool ompl::geometric::SPARSdb::addPathToRoadmap(const base::PlannerTerminationCo
     if (!getGuardSpacingFactor(solutionPath.length(), numGuards, spacingFactor))
         return false;
 
-    OMPL_DEBUG("Expected number of necessary coverage guards is calculated to be %i from the original path state count "
+    OMPL_DEBUG("The expected number of necessary coverage guards is calculated to be %i from the original path state count "
                "%i",
                numGuards, solutionPath.getStateCount());
 
@@ -667,7 +667,14 @@ bool ompl::geometric::SPARSdb::addPathToRoadmap(const base::PlannerTerminationCo
     for (int i = 0; i < n1; ++i)
         n += si_->getStateSpace()->validSegmentCount(solutionPath.getState(i), solutionPath.getState(i + 1));
 
-    solutionPath.interpolate(n);
+    if (denseRoadmap_) {
+        solutionPath.interpolate(pathSamplingFactor_ * solutionPath.getStateCount());
+
+    } else {
+        solutionPath.interpolate(n);
+    }
+
+    OMPL_DEBUG("The number of nodes to be added for this path is %i", n);
 
     // Debug
     if (verbose_)
@@ -829,7 +836,7 @@ bool ompl::geometric::SPARSdb::addPathToRoadmap(const base::PlannerTerminationCo
         addStateToRoadmap(ptc, solutionPath.getState(shuffledID));
     }
 
-    bool benchmarkLogging = true;
+    bool benchmarkLogging = false;
     if (benchmarkLogging)
     {
         OMPL_DEBUG("ompl::geometric::SPARSdb: Benchmark logging enabled (slower)");
@@ -962,6 +969,10 @@ bool ompl::geometric::SPARSdb::addStateToRoadmap(const base::PlannerTerminationC
     if (denseRoadmap_) {
         //this added call to findGraphNeighbors is very inexpensive when granularity is small enough (which it is meant to be).
         findGraphNeighbors(qNew, gnbhd, vnbhd, granularity_);
+        if (vnbhd.size()) {
+            OMPL_DEBUG("not adding this state");
+            return false;
+        }
     }
 
     //@TODO - Ramy: Test if creating another nbhd to seperate recall from connectivity has positive effects.
