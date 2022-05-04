@@ -856,7 +856,7 @@ namespace ompl
 
             double heuristicScaling_ {1.0};
 
-            int pathSamplingFactor_ {1.0};
+            int pathSamplingFactor_ {4};
 
             bool useCostInRoadmap_ {false};
 
