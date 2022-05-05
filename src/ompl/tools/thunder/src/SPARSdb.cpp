@@ -662,19 +662,22 @@ bool ompl::geometric::SPARSdb::addPathToRoadmap(const base::PlannerTerminationCo
                "%i",
                numGuards, solutionPath.getStateCount());
 
-    unsigned int n = 0;
-    const int n1 = solutionPath.getStateCount() - 1;
-    for (int i = 0; i < n1; ++i)
-        n += si_->getStateSpace()->validSegmentCount(solutionPath.getState(i), solutionPath.getState(i + 1));
 
-    if (denseRoadmap_) {
-        solutionPath.interpolate(pathSamplingFactor_ * solutionPath.getStateCount());
+
+    if (pathSamplingFactor_.has_value()) {
+        solutionPath.interpolate(pathSamplingFactor_.value() * solutionPath.getStateCount());
+        OMPL_DEBUG("The number of nodes to be added for this path is %i", pathSamplingFactor_.value() * solutionPath.getStateCount());
 
     } else {
+        unsigned int n = 0;
+        const int n1 = solutionPath.getStateCount() - 1;
+        for (int i = 0; i < n1; ++i) {
+            n += si_->getStateSpace()->validSegmentCount(solutionPath.getState(i), solutionPath.getState(i + 1));
+        }
         solutionPath.interpolate(n);
+        OMPL_DEBUG("The number of nodes to be added for this path is %i", n);
     }
 
-    OMPL_DEBUG("The number of nodes to be added for this path is %i", n);
 
     // Debug
     if (verbose_)

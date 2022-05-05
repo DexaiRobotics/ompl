@@ -438,7 +438,7 @@ namespace ompl
                 useCostInRoadmap_ = useCostInRoadmap;
             }
 
-            void setPathSamplingFactor(const int pathSamplingFactor)
+            void setPathSamplingFactor(const std::optional<int> pathSamplingFactor)
             {
                 pathSamplingFactor_ = pathSamplingFactor;
             }
@@ -492,7 +492,7 @@ namespace ompl
                 return useCostInRoadmap_;
             }
 
-            int getPathSamplingFactor() const
+            std::optional<int> getPathSamplingFactor() const
             {
                 return pathSamplingFactor_;
             }
@@ -856,7 +856,7 @@ namespace ompl
 
             double heuristicScaling_ {1.0};
 
-            int pathSamplingFactor_ {4};
+            std::optional<int> pathSamplingFactor_ {std::nullopt};
 
             bool useCostInRoadmap_ {false};
 
