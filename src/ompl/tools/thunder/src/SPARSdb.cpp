@@ -666,8 +666,6 @@ bool ompl::geometric::SPARSdb::addPathToRoadmap(const base::PlannerTerminationCo
 
     if (pathSamplingFactor_.has_value()) {
         solutionPath.interpolate(pathSamplingFactor_.value() * solutionPath.getStateCount());
-        OMPL_DEBUG("Number of nodes to be added for this path is %i", pathSamplingFactor_.value() * solutionPath.getStateCount());
-
     } else {
         unsigned int n = 0;
         const int n1 = solutionPath.getStateCount() - 1;
@@ -675,7 +673,6 @@ bool ompl::geometric::SPARSdb::addPathToRoadmap(const base::PlannerTerminationCo
             n += si_->getStateSpace()->validSegmentCount(solutionPath.getState(i), solutionPath.getState(i + 1));
         }
         solutionPath.interpolate(n);
-        OMPL_DEBUG("The number of nodes to be added for this path is %i", n);
     }
 
 
@@ -973,10 +970,8 @@ bool ompl::geometric::SPARSdb::addStateToRoadmap(const base::PlannerTerminationC
         //this added call to findGraphNeighbors is very inexpensive when granularity is small enough (which it is meant to be).
         findGraphNeighbors(qNew, gnbhd, vnbhd, granularity_);
         if (getNumConnectedComponents() == 1 && vnbhd.size()) {
-            OMPL_DEBUG("NOT adding this state");
             return false;
         }
-        OMPL_DEBUG("ADDing this state");
     }
 
     //@TODO - Ramy: Test if creating another nbhd to seperate recall from connectivity has positive effects.
