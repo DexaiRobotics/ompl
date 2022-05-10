@@ -443,6 +443,10 @@ namespace ompl
                 pathSamplingFactor_ = pathSamplingFactor;
             }
 
+            void setPathSamplingFactor(const int pathSamplingFactor)
+            {
+                pathSamplingFactor_ = pathSamplingFactor;
+            }
             /** \brief Retrieve the maximum consecutive failure limit. */
             unsigned int getMaxFailures() const
             {
