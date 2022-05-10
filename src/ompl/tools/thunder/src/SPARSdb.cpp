@@ -662,8 +662,6 @@ bool ompl::geometric::SPARSdb::addPathToRoadmap(const base::PlannerTerminationCo
                "%i",
                numGuards, solutionPath.getStateCount());
 
-
-
     if (pathSamplingFactor_.has_value()) {
         solutionPath.interpolate(pathSamplingFactor_.value() * solutionPath.getStateCount());
     } else {
@@ -674,7 +672,6 @@ bool ompl::geometric::SPARSdb::addPathToRoadmap(const base::PlannerTerminationCo
         }
         solutionPath.interpolate(n);
     }
-
 
     // Debug
     if (verbose_)

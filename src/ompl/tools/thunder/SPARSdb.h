@@ -447,6 +447,7 @@ namespace ompl
             {
                 pathSamplingFactor_ = pathSamplingFactor;
             }
+            
             /** \brief Retrieve the maximum consecutive failure limit. */
             unsigned int getMaxFailures() const
             {
