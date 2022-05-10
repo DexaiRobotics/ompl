@@ -447,7 +447,7 @@ namespace ompl
             {
                 pathSamplingFactor_ = pathSamplingFactor;
             }
-            
+
             /** \brief Retrieve the maximum consecutive failure limit. */
             unsigned int getMaxFailures() const
             {
@@ -861,6 +861,7 @@ namespace ompl
 
             double heuristicScaling_ {1.0};
 
+            /** \brief optional variable. If set, will sample each segment in the path with this many nodes and attempt to insert */
             std::optional<int> pathSamplingFactor_ {std::nullopt};
 
             bool useCostInRoadmap_ {false};
