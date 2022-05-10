@@ -438,11 +438,6 @@ namespace ompl
                 useCostInRoadmap_ = useCostInRoadmap;
             }
 
-            void setPathSamplingFactor(const std::optional<int> pathSamplingFactor)
-            {
-                pathSamplingFactor_ = pathSamplingFactor;
-            }
-
             void setPathSamplingFactor(const int pathSamplingFactor)
             {
                 pathSamplingFactor_ = pathSamplingFactor;
