@@ -666,8 +666,8 @@ bool ompl::geometric::SPARSdb::addPathToRoadmap(const base::PlannerTerminationCo
         solutionPath.interpolate(pathSamplingFactor_.value() * solutionPath.getStateCount());
     } else {
         unsigned int n = 0;
-        const int n1 = solutionPath.getStateCount() - 1;
-        for (int i = 0; i < n1; ++i) {
+        const auto n1 {solutionPath.getStateCount() - 1};
+        for (size_t i = 0; i < n1; ++i) {
             n += si_->getStateSpace()->validSegmentCount(solutionPath.getState(i), solutionPath.getState(i + 1));
         }
         solutionPath.interpolate(n);
@@ -966,6 +966,7 @@ bool ompl::geometric::SPARSdb::addStateToRoadmap(const base::PlannerTerminationC
     if (denseRoadmap_) {
         //this added call to findGraphNeighbors is very inexpensive when granularity is small enough (which it is meant to be).
         findGraphNeighbors(qNew, gnbhd, vnbhd, granularity_);
+        // if roadmap has only one connected component when we try to add a node, skip the expensive attempt to add it as a connectivity node.
         if (getNumConnectedComponents() == 1 && vnbhd.size()) {
             return false;
         }
