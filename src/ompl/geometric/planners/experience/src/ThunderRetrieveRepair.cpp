@@ -154,8 +154,7 @@ namespace ompl
                 return base::PlannerStatus::INVALID_START;
             }
 
-            if (goalState == nullptr)
-            {
+            if (goalState == nullptr) {
                 OMPL_INFORM("RetrieveRepair::solve() goal state pointer is null. Returning "
                             "PlannerStatus::INVALID_GOAL");
                 return base::PlannerStatus::INVALID_GOAL;
