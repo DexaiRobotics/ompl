@@ -56,11 +56,24 @@ void ompl::base::CostConvergenceTerminationCondition::processNewSolution(const o
     double newCost = ((solutions - 1) * averageCost_ + solutionCost.value()) / solutions;
     double costLowerThreshold = (1. - epsilon_) * averageCost_;
     double costUpperThreshold = (1. + epsilon_) * averageCost_;
+    double old_cost_dot {cost_dot_};
+    double cost_delta {averageCost_ - newCost}; 
     averageCost_ = newCost;
+    if (cost_delta > 0) {
+      cost_dot_ = ((solutions - 1) * cost_dot_ + (cost_delta)) / solutions; 
+      cost_ddot_ = ((solutions - 1) * cost_ddot_ + (old_cost_dot - cost_dot_)) / solutions; 
+    }
+    
+    
+    
+    OMPL_DEBUG("CCTC: %u: avg_cost(%u): %f; upper/lower: %f/%f; gradient: %f; cost_ddot: %f", solutions_, solutions, averageCost_, costUpperThreshold, costLowerThreshold, cost_dot_, cost_ddot_); 
 
-    if (solutions == solutionsWindow_ &&
+    if (solutions_ > 3 * solutionsWindow_ &&
+        solutions == solutionsWindow_ &&
         averageCost_ > costLowerThreshold &&
-        averageCost_ < costUpperThreshold)
+        averageCost_ < costUpperThreshold &&
+        cost_dot_ > 0 &&
+        cost_dot_ < epsilon_)
     {
         OMPL_DEBUG("CostConvergenceTerminationCondition: Cost of optimizing planner converged after %lu solutions", solutions_);
         terminate();

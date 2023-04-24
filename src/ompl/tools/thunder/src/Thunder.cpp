@@ -98,6 +98,7 @@ void ompl::tools::Thunder::setup()
           planner_vec_ = planner_vec;
         }
         // set up planner ptr vector based on planner type
+        size_t k {};
         for (auto &planner : planner_vec_)
         {
             if (!planner)
@@ -112,15 +113,27 @@ void ompl::tools::Thunder::setup()
                     auto cforest_planner {std::make_shared<ompl::geometric::CForest>(si_)};
                     cforest_planner->setNumThreads(cforest_n_threads_);
                     planner = cforest_planner;
-                }
-                else
-                {
+                } else if (planner_type_ == thunderPlanner::PLANNER_INFORMEDRRTSTAR) {
+                    auto rrt_planner {std::make_shared<ompl::geometric::InformedRRTstar>(si_)};
+                    if(seed_soln_path_) {
+                      rrt_planner->setProblemDefinition(pdef_);
+                      std::cerr << "set pdef for planner k=" << k << std::endl;
+                      rrt_planner->setup();
+                      std::cerr << "ran setup for planner k=" << k << std::endl;
+                      rrt_planner->addPotentialSolutionPath(*seed_soln_path_);
+                    }
+                    planner = rrt_planner;
+                } else {
                     planner = std::make_shared<ompl::geometric::RRTConnect>(si_);
                 }
-                planner->setProblemDefinition(pdef_);
-                if (!planner->isSetup())
-                    planner->setup();
+                
+                if (!planner->isSetup()) {
+                  planner->setProblemDefinition(pdef_);
+                  planner->setup();
+                }
+                    
             }
+            k++;
         }
 
         // Setup planning from experience planner

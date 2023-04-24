@@ -65,7 +65,8 @@ namespace ompl
   enum thunderPlanner
   {
       PLANNER_CFOREST,
-      PLANNER_RRTCONNECT
+      PLANNER_RRTCONNECT,
+      PLANNER_INFORMEDRRTSTAR,
   };
     namespace tools
     {
@@ -111,6 +112,7 @@ namespace ompl
             double SparseD_{};
             size_t n_parallel_plans_{0};
             size_t cforest_n_threads_{0};
+            std::shared_ptr<ompl::geometric::PathGeometric> seed_soln_path_ {};
 
         public:
             /** \brief Display debug data about potential available solutions */
@@ -189,6 +191,14 @@ namespace ompl
             void setRRT() {
               planner_type_ = thunderPlanner::PLANNER_RRTCONNECT;
             }
+
+            void setInformedRRTstar() {
+              planner_type_ = thunderPlanner::PLANNER_INFORMEDRRTSTAR;
+            }
+
+            void addPotentialSolutionPath(std::shared_ptr<ompl::geometric::PathGeometric> seed_soln_path) {
+              seed_soln_path_ = seed_soln_path; 
+            } 
 
             /** \brief Set the number of threads to use for planning. */
             void setNumParallelPlans(const size_t n_parallel_plans) {

@@ -371,6 +371,7 @@ namespace ompl
             }
             else  // We have a solution
             {
+              // OMPL_INFORM("DirectedInfSampler: have solution! maxCost: %f", maxCost.value());
                 // Update the definitions of the PHSs
                 updatePhsDefinitions(maxCost);
 
@@ -381,11 +382,13 @@ namespace ompl
                 // Check if the average measure is greater than half the domain's measure. Half is an arbitrary number.
                 if (informedSubSpace_->getMeasure() < summedMeasure_ / static_cast<double>(listPhsPtrs_.size()))
                 {
+                  // OMPL_DEBUG("Measure is big. %f < %f", informedSubSpace_->getMeasure(), summedMeasure_ / static_cast<double>(listPhsPtrs_.size()));
                     // The measure is large, sample from the entire world and keep if it's in any PHS
                     foundSample = sampleBoundsRejectPhs(statePtr, iters);
                 }
                 else
                 {
+                  OMPL_DEBUG("measure is small enough %f >= %f that we sample the PHS", informedSubSpace_->getMeasure(), summedMeasure_ / static_cast<double>(listPhsPtrs_.size()));
                     // The measure is sufficiently small that we will directly sample the PHSes, with the weighting
                     // given by their relative measures
                     foundSample = samplePhsRejectBounds(statePtr, iters);
@@ -417,6 +420,9 @@ namespace ompl
                 // Increment the provided counter
                 ++(*iters);
             }
+            // if(foundSample){
+            //   OMPL_DEBUG("found sample in %u iters", *iters);
+            // }
 
             // successful?
             return foundSample;

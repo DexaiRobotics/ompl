@@ -65,6 +65,9 @@ namespace ompl
             ProblemDefinitionPtr pdef_;
             /// Cumulative moving average of solutions found so far.
             double averageCost_{0.};
+            /// Gradient of the cost
+            double cost_dot_ {0.};
+            double cost_ddot_ {0.0};
             /// Number of solutions found so far.
             size_t solutions_{0};
 
