@@ -845,7 +845,7 @@ namespace ompl
             /** \brief A counter for the number of iterations of the algorithm */
             long unsigned int iterations_{0ul};
 
-            /** \brief Check number of connected components on node insertion. When true, we try to insert a node if it connects connected components in the roadmap together */
+            /** \brief When true, we insert a node if it decreases the number of connected components (results in the connection of otherwise disconnected subgraphs).  Warning: setting this true will make insertion computationally more expensive as it checks the number of connected components */
             bool check_connected_components_ {true};
 
             /** \brief Maximum visibility range for nodes in the graph */
