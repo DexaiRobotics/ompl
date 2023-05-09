@@ -413,6 +413,11 @@ namespace ompl
                 maxFailures_ = m;
             }
 
+            void setCheckConnectedComponents(const bool check_connected_components)
+            {
+                check_connected_components_ = check_connected_components;
+            }
+
             void setDenseRoadmap(const bool denseRoadmap)
             {
                 denseRoadmap_ = denseRoadmap;
@@ -465,6 +470,11 @@ namespace ompl
             double getStretchFactor() const
             {
                 return stretchFactor_;
+            }
+
+            bool getCheckConnectedComponents() const
+            {
+                return check_connected_components_;
             }
 
             bool getDenseRoadmap() const
@@ -834,6 +844,9 @@ namespace ompl
 
             /** \brief A counter for the number of iterations of the algorithm */
             long unsigned int iterations_{0ul};
+
+            /** \brief Check number of connected components on node insertion. When true, we try to insert a node if it connects connected components in the roadmap together */
+            bool check_connected_components_ {true};
 
             /** \brief Maximum visibility range for nodes in the graph */
             double sparseDelta_{0.};
