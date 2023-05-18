@@ -426,7 +426,7 @@ void ompl::base::ProblemDefinition::addSolutionPath(const PathPtr &path, bool ap
 {
     PlannerSolution sol(path);
     if (computeSolutionCost_) {
-        Cost sol_cost {path->cost(optimizationObjective_)};
+        Cost sol_cost {path->cost(optimizationObjective_, use_worst_motion_cost_in_path_)};
         sol.setOptimized(optimizationObjective_, sol_cost, false);
     }
     if (approximate && !acceptApproximate_)

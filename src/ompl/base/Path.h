@@ -110,7 +110,7 @@ namespace ompl
 
             /** \brief Return the cost of the path with respect to a
                 specified optimization objective. */
-            virtual Cost cost(const OptimizationObjectivePtr &obj) const = 0;
+            virtual Cost cost(const OptimizationObjectivePtr &obj, const bool use_use_worst_motion_cost = false) const = 0;
 
             /** \brief Check if the path is valid */
             virtual bool check() const = 0;

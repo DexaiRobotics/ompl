@@ -120,7 +120,8 @@ void ompl::control::PathControl::copyFrom(const PathControl &other)
     controlDurations_ = other.controlDurations_;
 }
 
-ompl::base::Cost ompl::control::PathControl::cost(const base::OptimizationObjectivePtr &opt) const
+ompl::base::Cost ompl::control::PathControl::cost(const base::OptimizationObjectivePtr &opt,
+                                                  const bool use_use_worst_motion_cost) const
 {
     OMPL_ERROR("Error: Cost computation is only implemented for paths of type PathGeometric.");
     return opt->identityCost();

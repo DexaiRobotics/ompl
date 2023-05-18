@@ -88,15 +88,17 @@ void ompl::geometric::PathGeometric::freeMemory()
         si_->freeState(state);
 }
 
-ompl::base::Cost ompl::geometric::PathGeometric::cost(const base::OptimizationObjectivePtr &opt) const
+ompl::base::Cost ompl::geometric::PathGeometric::cost(const base::OptimizationObjectivePtr &opt, const bool use_worst_motion_cost) const
 {
     if (states_.empty())
         return opt->identityCost();
     // Compute path cost by accumulating the cost along the path
     base::Cost cost(opt->initialCost(states_.front()));
     for (std::size_t i = 1; i < states_.size(); ++i)
-        cost = opt->combineCosts(cost, opt->motionCost(states_[i - 1], states_[i]));
-    cost = opt->combineCosts(cost, opt->terminalCost(states_.back()));
+        cost = use_worst_motion_cost ? opt->worseCost(cost, opt->motionCost(states_[i - 1], states_[i])) :
+                                       opt->combineCosts(cost, opt->motionCost(states_[i - 1], states_[i]));
+    cost = use_worst_motion_cost ? opt->worseCost(cost, opt->terminalCost(states_.back())) :
+                                   opt->combineCosts(cost, opt->terminalCost(states_.back()));
     return cost;
 }
 

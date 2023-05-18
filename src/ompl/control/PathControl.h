@@ -75,7 +75,8 @@ namespace ompl
             PathControl &operator=(const PathControl &other);
 
             /** \brief Not yet implemented. */
-            base::Cost cost(const base::OptimizationObjectivePtr &opt) const override;
+            base::Cost cost(const base::OptimizationObjectivePtr &opt,
+                            const bool use_use_worst_motion_cost = false) const override;
 
             /** \brief The path length (sum of control durations) */
             double length() const override;

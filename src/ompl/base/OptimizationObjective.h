@@ -109,6 +109,9 @@ namespace ompl
             /** \brief Return the minimum cost given \e c1 and \e c2. Uses isCostBetterThan. */
             virtual Cost betterCost(Cost c1, Cost c2) const;
 
+            /** \brief Return the maximum cost given \e c1 and \e c2. Uses isCostBetterThan. */
+            virtual Cost worseCost(Cost c1, Cost c2) const;
+
             /** \brief Evaluate a cost map defined on the state space at a state \e s. */
             virtual Cost stateCost(const State *s) const = 0;
 
