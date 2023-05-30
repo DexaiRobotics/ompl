@@ -446,7 +446,9 @@ bool ompl::base::PlannerData::addEdge(unsigned int v1, unsigned int v2, const Pl
     Graph::Edge e;
     bool added = false;
     tie(e, added) = boost::add_edge(boost::vertex(v1, *graph_), boost::vertex(v2, *graph_), properties, *graph_);
-
+    OMPL_INFORM("Added edge with weight: %d", weight);
+    // OMPL_INFORM("Get planner data from SPARS2 with \n  %d vertices\n  %d edges\n  %d start states\n  %d goal states",
+    //             data->numVertices(), data->numEdges(), data->numStartVertices(), data->numGoalVertices());
     if (!added)
         delete clone;
 

@@ -94,11 +94,18 @@ ompl::base::Cost ompl::geometric::PathGeometric::cost(const base::OptimizationOb
         return opt->identityCost();
     // Compute path cost by accumulating the cost along the path
     base::Cost cost(opt->initialCost(states_.front()));
-    for (std::size_t i = 1; i < states_.size(); ++i)
-        cost = use_worst_motion_cost ? opt->worseCost(cost, opt->motionCost(states_[i - 1], states_[i])) :
-                                       opt->combineCosts(cost, opt->motionCost(states_[i - 1], states_[i]));
-    cost = use_worst_motion_cost ? opt->worseCost(cost, opt->terminalCost(states_.back())) :
-                                   opt->combineCosts(cost, opt->terminalCost(states_.back()));
+    for (std::size_t i = 1; i < states_.size(); ++i) {
+        // auto worst_motion_cost {opt->worseCost(cost, opt->motionCost(states_[i - 1], states_[i]))};
+        auto motion_cost {opt->motionCost(states_[i - 1], states_[i])};
+        auto worst_motion_cost {opt->isCostBetterThan(cost, motion_cost) ? motion_cost : cost};
+        cost = use_worst_motion_cost ? worst_motion_cost :
+                                       opt->combineCosts(cost, motion_cost);
+    }
+    
+    auto terminal_cost {opt->terminalCost(states_.back())};
+    auto worst_motion_cost {opt->isCostBetterThan(cost, terminal_cost) ? terminal_cost : cost};
+    cost = use_worst_motion_cost ? worst_motion_cost :
+                                   opt->combineCosts(cost, terminal_cost);
     return cost;
 }
 

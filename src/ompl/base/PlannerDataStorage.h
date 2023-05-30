@@ -248,6 +248,7 @@ namespace ompl
                     ia >> edgeData;
                     pd.addEdge(edgeData.endpoints_.first, edgeData.endpoints_.second, *edgeData.e_,
                                Cost(edgeData.weight_));
+                    OMPL_INFORM("Loading edge (%i to %i) with weight %d", edgeData.endpoints_.first, edgeData.endpoints_.second, edgeData.weight_);
 
                     // We deserialized the edge object pointer, and we own it.
                     // Since addEdge copies the object, it is safe to free here.
@@ -271,7 +272,7 @@ namespace ompl
                         Cost weight;
                         if (!pd.getEdgeWeight(fromVertex, toVertex, &weight))
                             OMPL_ERROR("Unable to get edge weight");
-
+                        OMPL_INFORM("Storing edge (%i to %i) with weight %d", fromVertex, toVertex, weight.value());
                         // Convert to new structure
                         PlannerDataEdgeData edgeData;
                         edgeData.e_ = &pd.getEdge(fromVertex, toVertex);
