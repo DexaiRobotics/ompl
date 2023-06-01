@@ -434,18 +434,6 @@ namespace ompl
                 acceptApproximate_ = acceptApproximate;
             }
 
-            /** \brief Returns the flag that controls whether or not we accept approximate solutions */
-            bool getPathCostComputationMode() const
-            {
-                return use_worst_motion_cost_in_path_;
-            }
-
-            /** \brief Sets the flag that controls whether or not we accept approximate solutions */
-            void setPathCostComputationMode(const bool use_worst_motion_cost_in_path)
-            {
-                use_worst_motion_cost_in_path_ = use_worst_motion_cost_in_path;
-            }
-
         protected:
             /** \brief Helper function for fixInvalidInputStates(). Attempts to fix an individual state */
             bool fixInvalidInputState(State *state, double dist, bool start, unsigned int attempts);
@@ -484,8 +472,6 @@ namespace ompl
 
             /** \brief Flag that controls whether or not we return approximate solutions */
             bool returnApproximateSolutions_ {false};
-
-            bool use_worst_motion_cost_in_path_ {false};
         };
     }
 }

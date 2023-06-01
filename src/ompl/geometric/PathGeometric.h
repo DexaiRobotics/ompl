@@ -92,7 +92,7 @@ namespace ompl
                OptimizationObjective::terminalCost()
                 are also used in the computation for the first and last states, respectively. Empty paths have identity
                cost. */
-            base::Cost cost(const base::OptimizationObjectivePtr &obj, const bool use_worst_motion_cost = false) const override;
+            base::Cost cost(const base::OptimizationObjectivePtr &obj) const override;
 
             /** \brief Compute the length of a geometric path (sum of lengths of segments that make up the path) */
             double length() const override;
@@ -271,7 +271,6 @@ namespace ompl
 
             /** \brief The list of states that make up the path */
             std::vector<base::State *> states_;
-
         };
     }
 }
