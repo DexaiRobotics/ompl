@@ -1667,7 +1667,7 @@ ompl::geometric::SPARSdb::Vertex ompl::geometric::SPARSdb::addGuard(base::State 
     return m;
 }
 
-void ompl::geometric::SPARSdb::connectGuards(Vertex v, Vertex vp)
+void ompl::geometric::SPARSdb::connectGuards(Vertex v, Vertex vp, std::optional<ompl::base::Cost> edge_weight)
 {
     // OMPL_INFORM("connectGuards called ---------------------------------------------------------------- ");
     assert(v <= getNumVertices());
@@ -1682,7 +1682,12 @@ void ompl::geometric::SPARSdb::connectGuards(Vertex v, Vertex vp)
     Edge e = (boost::add_edge(v, vp, g_)).first;
 
     // Add associated properties to the edge
-    edgeWeightProperty_[e] = costFunction(v, vp);  // TODO: use this value with astar
+    if (edge_weight.has_value()) {
+        edgeWeightProperty_[e] = edge_weight.value().value();
+    } else {
+        OMPL_WARN("We are having to compute cost because we can't load it for vertices (%i and %i)", v, vp);
+        edgeWeightProperty_[e] = costFunction(v, vp);  // TODO: use this value with astar
+    }
     edgeCollisionStateProperty_[e] = NOT_CHECKED;
 
     // Add the edge to the incrementeal connected components datastructure
@@ -1832,6 +1837,7 @@ void ompl::geometric::SPARSdb::setPlannerData(const base::PlannerData &data)
     verbose_ = false;
 
     OMPL_INFORM("Loading vertices:");
+    std::vector<std::size_t> invalid_vertices {};
     // Add the nodes to the graph
     for (std::size_t vertexID = 0; vertexID < data.numVertices(); ++vertexID)
     {
@@ -1842,6 +1848,11 @@ void ompl::geometric::SPARSdb::setPlannerData(const base::PlannerData &data)
         // Get the tag, which in this application represents the vertex type
         auto type = static_cast<GuardType>(data.getVertex(vertexID).getTag());
 
+        if (migrateRoadmapOnLoad_ && !si_->isValid(state)) {
+            // State not valid, do not add it. Remember it now, remove edges connected to it later.
+            invalid_vertices.push_back(vertexID);
+            continue;
+        }
         // ADD GUARD
         idToVertex.push_back(addGuard(state, type));
     }
@@ -1850,7 +1861,11 @@ void ompl::geometric::SPARSdb::setPlannerData(const base::PlannerData &data)
     // Add the corresponding edges to the graph
     std::vector<unsigned int> edgeList;
     for (std::size_t fromVertex = 0; fromVertex < data.numVertices(); ++fromVertex)
-    {
+    {   
+        if (migrateRoadmapOnLoad_ && (std::find(invalid_vertices.begin(), invalid_vertices.end(), fromVertex) != invalid_vertices.end())) {
+            // edge connected to invalid node
+            continue;
+        }
         edgeList.clear();
 
         // Get the edges
@@ -1861,16 +1876,31 @@ void ompl::geometric::SPARSdb::setPlannerData(const base::PlannerData &data)
         // Process edges
         for (unsigned int toVertex : edgeList)
         {
+            if (migrateRoadmapOnLoad_ && (std::find(invalid_vertices.begin(), invalid_vertices.end(), toVertex) != invalid_vertices.end())) {
+                // edge connected to invalid node
+                continue;
+            }
             Vertex n = idToVertex[toVertex];
 
             // Add the edge to the graph
-            const base::Cost weight(0);
-            if (verbose_ && false)
+            auto edge_weight {data.getEdgeWeightReturned(fromVertex,toVertex)};
+            if (migrateRoadmapOnLoad_) {
+                // skip adding invalid edge
+                const base::State *fromState = data.getVertex(fromVertex).getState();
+                const base::State *toState = data.getVertex(toVertex).getState();
+                if (!si_->checkMotion(fromState, toState))
+                    // edge invalid, skip.
+                    continue;
+                // need to recalculate edge weight
+                edge_weight = std::nullopt;
+            }
+            if (edge_weight.has_value())
             {
-                OMPL_INFORM("    Adding edge from vertex id %d to id %d into edgeList", fromVertex, toVertex);
+                OMPL_INFORM("    Adding edge from vertex id %d to id %d into edgeList, with edge weight %f", fromVertex, toVertex, edge_weight.value().value());
                 OMPL_INFORM("      Vertex %d to %d", m, n);
             }
-            connectGuards(m, n);
+            // add edge
+            connectGuards(m, n, edge_weight);
         }
     }  // for
 

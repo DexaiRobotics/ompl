@@ -161,10 +161,10 @@ namespace ompl
                     ar &endpoints_;
                     ar &weight_;
                 }
-
-                const PlannerDataEdge *e_;
-                std::pair<unsigned int, unsigned int> endpoints_;
-                double weight_;
+                public:
+                    const PlannerDataEdge *e_;
+                    std::pair<unsigned int, unsigned int> endpoints_;
+                    double weight_;
             };
 
             /// \brief Read \e numVertices from the binary input \e ia and store them as PlannerData.
@@ -248,7 +248,7 @@ namespace ompl
                     ia >> edgeData;
                     pd.addEdge(edgeData.endpoints_.first, edgeData.endpoints_.second, *edgeData.e_,
                                Cost(edgeData.weight_));
-                    OMPL_INFORM("Loading edge (%i to %i) with weight %d", edgeData.endpoints_.first, edgeData.endpoints_.second, edgeData.weight_);
+                    OMPL_INFORM("Loading edge (%i to %i) with weight %f", edgeData.endpoints_.first, edgeData.endpoints_.second, edgeData.weight_);
 
                     // We deserialized the edge object pointer, and we own it.
                     // Since addEdge copies the object, it is safe to free here.
@@ -269,16 +269,25 @@ namespace ompl
                     for (unsigned int toVertex : edgeList)
                     {
                         // Get cost
-                        Cost weight;
-                        if (!pd.getEdgeWeight(fromVertex, toVertex, &weight))
-                            OMPL_ERROR("Unable to get edge weight");
-                        OMPL_INFORM("Storing edge (%i to %i) with weight %d", fromVertex, toVertex, weight.value());
+                        std::optional<Cost> weight_opt {pd.getEdgeWeightReturned(fromVertex, toVertex)};
+                        if (!weight_opt.has_value())
+                            OMPL_ERROR("Unable to get edge weight123");
+                        Cost weight {weight_opt.value()};
+                        // OMPL_INFORM("276 weight = %d", weight.value());
+                        OMPL_INFORM("Storing edge123 (%i to %i) with weight %f", fromVertex, toVertex, weight.value());
                         // Convert to new structure
-                        PlannerDataEdgeData edgeData;
+                        auto edgeData = PlannerDataEdgeData();
                         edgeData.e_ = &pd.getEdge(fromVertex, toVertex);
                         edgeData.endpoints_.first = fromVertex;
                         edgeData.endpoints_.second = toVertex;
                         edgeData.weight_ = weight.value();
+                        // OMPL_INFORM("edgeData.weight_ = %f", edgeData.weight_);
+                        // edgeData.weight_ = 5;
+                        // OMPL_INFORM("edgeData.weight_ = %f", edgeData.weight_);
+                        // edgeData.weight_ = 3.5;
+                        // OMPL_INFORM("edgeData.weight_ = %f", edgeData.weight_);
+                        // double test_double {5.4};
+                        // OMPL_INFORM("test_double = %f", test_double);
                         oa << edgeData;
 
                     }  // for each edge

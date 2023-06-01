@@ -46,6 +46,7 @@
 #include <boost/graph/dijkstra_shortest_paths.hpp>
 #include <boost/property_map/function_property_map.hpp>
 #include <utility>
+#include <optional>
 
 // This is a convenient macro to cast the void* graph pointer as the
 // Boost.Graph structure from PlannerDataGraph.h
@@ -159,15 +160,39 @@ bool ompl::base::PlannerData::getEdgeWeight(unsigned int v1, unsigned int v2, Co
     Graph::Edge e;
     bool exists;
     boost::tie(e, exists) = boost::edge(boost::vertex(v1, *graph_), boost::vertex(v2, *graph_), *graph_);
-
+    
     if (exists)
     {
         boost::property_map<Graph::Type, boost::edge_weight_t>::type edges = get(boost::edge_weight, *graph_);
         *weight = edges[e];
+        OMPL_INFORM("edges[e] = %d, weight = %d", edges[e], weight->value());
         return true;
     }
-
+    else {
+        OMPL_WARN("Edge between %i and %i does not exist!", v1, v2);
+    }
     return false;
+}
+
+std::optional<ompl::base::Cost> ompl::base::PlannerData::getEdgeWeightReturned(unsigned int v1, unsigned int v2) const
+{
+    Graph::Edge e;
+    Cost weight {};
+    bool exists;
+    boost::tie(e, exists) = boost::edge(boost::vertex(v1, *graph_), boost::vertex(v2, *graph_), *graph_);
+
+    if (exists)
+    {
+        boost::property_map<Graph::Type, boost::edge_weight_t>::type edges = get(boost::edge_weight, *graph_);
+        weight = edges[e];
+        // weight = Cost(5);
+        OMPL_INFORM("edges[e] = %f, weight = %f", edges[e], weight.value());
+        return weight;
+    }
+    else {
+        OMPL_WARN("Edge between %i and %i does not exist!", v1, v2);
+    }
+    return std::nullopt;
 }
 
 bool ompl::base::PlannerData::setEdgeWeight(unsigned int v1, unsigned int v2, Cost weight)
@@ -446,7 +471,7 @@ bool ompl::base::PlannerData::addEdge(unsigned int v1, unsigned int v2, const Pl
     Graph::Edge e;
     bool added = false;
     tie(e, added) = boost::add_edge(boost::vertex(v1, *graph_), boost::vertex(v2, *graph_), properties, *graph_);
-    OMPL_INFORM("Added edge with weight: %d", weight);
+    // OMPL_INFORM("Added edge with weight: %d", weight);
     // OMPL_INFORM("Get planner data from SPARS2 with \n  %d vertices\n  %d edges\n  %d start states\n  %d goal states",
     //             data->numVertices(), data->numEdges(), data->numStartVertices(), data->numGoalVertices());
     if (!added)

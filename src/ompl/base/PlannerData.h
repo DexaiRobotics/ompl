@@ -41,6 +41,7 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <optional>
 #include "ompl/base/State.h"
 #include "ompl/base/Cost.h"
 #include "ompl/base/SpaceInformation.h"
@@ -340,6 +341,8 @@ namespace ompl
             /// out-variable \e weight. Otherwise, this function
             /// returns false.
             bool getEdgeWeight(unsigned int v1, unsigned int v2, Cost *weight) const;
+            
+            std::optional<ompl::base::Cost> getEdgeWeightReturned(unsigned int v1, unsigned int v2) const;
             /// \brief Sets the weight of the edge between the given
             /// vertex indices.  If an edge between v1 and v2 does not
             /// exist, this function returns false.
