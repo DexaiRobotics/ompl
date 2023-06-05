@@ -737,7 +737,7 @@ namespace ompl
             Vertex addGuard(base::State *state, GuardType type);
 
             /** \brief Connect two guards in the roadmap */
-            void connectGuards(Vertex v, Vertex vp, std::optional<ompl::base::Cost> edge_weight = std::nullopt);
+            void connectGuards(Vertex v, Vertex vp, std::optional<ompl::base::Cost> edge_weight = std::nullopt, const bool compute_edge_cost = false);
 
             /** \brief Check if there exists a solution, i.e., there exists a pair of milestones such that the first is
              * in \e start and the second is in \e goal, and the two milestones are in the same connected component. If
@@ -780,9 +780,10 @@ namespace ompl
                 return si_->distance(stateProperty_[a], stateProperty_[b]);
             }
 
-            double costFunction(const Vertex a, const Vertex b) const
+            double costFunction(const Vertex a, const Vertex b, const bool compute_cost = false) const
             {
-                return useCostInRoadmap_ && pdef_->getOptimizationObjective() ? pdef_->getOptimizationObjective()->motionCost(stateProperty_[a], stateProperty_[b]).value() : distanceFunction(a, b);
+                const auto use_cost {useCostInRoadmap_ || compute_cost};
+                return use_cost && pdef_->getOptimizationObjective() ? pdef_->getOptimizationObjective()->motionCost(stateProperty_[a], stateProperty_[b]).value() : distanceFunction(a, b);
             }
 
             /** \brief Sampler user for generating valid samples in the state space */

@@ -67,8 +67,9 @@ double ompl::geometric::SPARSdb::edgeWeightMap::get(Edge e) const
     // Get the status of collision checking for this edge
     if (collisionStates_[e] == IN_COLLISION)
         return std::numeric_limits<double>::infinity();
-
-    return boost::get(boost::edge_weight, g_, e);
+    const auto weight {boost::get(boost::edge_weight, g_, e)};
+    OMPL_INFORM("Edge weight: %f", weight);
+    return weight;
 }
 
 namespace boost
@@ -434,9 +435,11 @@ bool ompl::geometric::SPARSdb::constructSolution(const Vertex start, const Verte
                                 .predecessor_map(vertexPredecessors)
                                 .distance_map(&vertexDistances[0])
                                 .visitor(CustomVisitor(goal)));
+        OMPL_WARN("Successfully used astar_search");
     }
     catch (ompl::geometric::SPARSdb::foundGoalException &)
     {
+        OMPL_WARN("couldn't use astar_search");
         // the custom exception from CustomVisitor
         if (verbose_ && false)
         {
@@ -456,6 +459,7 @@ bool ompl::geometric::SPARSdb::constructSolution(const Vertex start, const Verte
         }
         else
         {
+            OMPL_INFORM("vertexDistances[goal] = %f", vertexDistances[goal]);
             // Only clear the vertexPath after we know we have a new solution, otherwise it might have a good
             // previous one
             vertexPath.clear();  // remove any old solutions
@@ -948,7 +952,7 @@ bool ompl::geometric::SPARSdb::addStateToRoadmap(const base::PlannerTerminationC
     bool stateAdded = false;
     // Check that the query vertex is initialized (used for internal nearest neighbor searches)
     checkQueryStateInitialization();
-
+    OMPL_INFORM("Attempting to add state to");
     // Deep copy
     base::State *qNew = si_->cloneState(newState);
     base::State *workState = si_->allocState();
@@ -1099,7 +1103,7 @@ bool ompl::geometric::SPARSdb::checkAddCoverage(const base::State *qNew, std::ve
             // DTC: this should actually never happen - we just created the new vertex so
             // why would it be connected to anything?
             if (!boost::edge(v, neighbor, g_).second) {
-                connectGuards(v, neighbor);
+                connectGuards(v, neighbor, std::nullopt, true);
             }
         }
     }
@@ -1152,7 +1156,7 @@ bool ompl::geometric::SPARSdb::checkAddConnectivity(const base::State *qNew, std
                 {
                     // The components haven't been united by previous links
                     if (!sameComponent(statesInDiffConnectedComponent, newVertex))
-                        connectGuards(newVertex, statesInDiffConnectedComponent);
+                        connectGuards(newVertex, statesInDiffConnectedComponent, std::nullopt, true);
                 }
             }
 
@@ -1180,7 +1184,7 @@ bool ompl::geometric::SPARSdb::checkAddInterface(const base::State *qNew, std::v
                     // Connect them
                     if (verbose_)
                         OMPL_INFORM(" ---   INTERFACE: directly connected nodes ");
-                    connectGuards(visibleNeighborhood[0], visibleNeighborhood[1]);
+                    connectGuards(visibleNeighborhood[0], visibleNeighborhood[1], std::nullopt, true);
                     // And report that we added to the roadmap
                     resetFailures();
                     // Report success
@@ -1192,8 +1196,8 @@ bool ompl::geometric::SPARSdb::checkAddInterface(const base::State *qNew, std::v
                     if (verbose_)
                         OMPL_INFORM(" --- Adding node for INTERFACE  ");
                     Vertex v = addGuard(si_->cloneState(qNew), INTERFACE);
-                    connectGuards(v, visibleNeighborhood[0]);
-                    connectGuards(v, visibleNeighborhood[1]);
+                    connectGuards(v, visibleNeighborhood[0], std::nullopt, true);
+                    connectGuards(v, visibleNeighborhood[1], std::nullopt, true);
                     if (verbose_)
                         OMPL_INFORM(" ---   INTERFACE: connected two neighbors through new interface node ");
                     // Report success
@@ -1244,7 +1248,7 @@ bool ompl::geometric::SPARSdb::checkAddPath(Vertex v)
             {
                 spannerPropertyWasViolated = true;  // Report that we added for the path
                 if (si_->checkMotion(stateProperty_[r], stateProperty_[rp]))
-                    connectGuards(r, rp);
+                    connectGuards(r, rp, std::nullopt, true);
                 else
                 {
                     auto p(std::make_shared<PathGeometric>(si_));
@@ -1281,12 +1285,12 @@ bool ompl::geometric::SPARSdb::checkAddPath(Vertex v)
                                 OMPL_INFORM(" --- Adding node for QUALITY");
                             vnew = addGuard(st, QUALITY);
 
-                            connectGuards(prior, vnew);
+                            connectGuards(prior, vnew, std::nullopt, true);
                             prior = vnew;
                         }
                         // clear the states, so memory is not freed twice
                         states.clear();
-                        connectGuards(prior, rp);
+                        connectGuards(prior, rp, std::nullopt, true);
                     }
                 }
             }
@@ -1667,7 +1671,7 @@ ompl::geometric::SPARSdb::Vertex ompl::geometric::SPARSdb::addGuard(base::State 
     return m;
 }
 
-void ompl::geometric::SPARSdb::connectGuards(Vertex v, Vertex vp, std::optional<ompl::base::Cost> edge_weight)
+void ompl::geometric::SPARSdb::connectGuards(Vertex v, Vertex vp, std::optional<ompl::base::Cost> edge_weight, const bool compute_edge_cost)
 {
     // OMPL_INFORM("connectGuards called ---------------------------------------------------------------- ");
     assert(v <= getNumVertices());
@@ -1686,7 +1690,8 @@ void ompl::geometric::SPARSdb::connectGuards(Vertex v, Vertex vp, std::optional<
         edgeWeightProperty_[e] = edge_weight.value().value();
     } else {
         OMPL_WARN("We are having to compute cost because we can't load it for vertices (%i and %i)", v, vp);
-        edgeWeightProperty_[e] = costFunction(v, vp);  // TODO: use this value with astar
+        // edgeWeightProperty_[e] = 2;  // TODO: use this value with astar
+        edgeWeightProperty_[e] = costFunction(v, vp, true);  // TODO: use this value with astar
     }
     edgeCollisionStateProperty_[e] = NOT_CHECKED;
 
