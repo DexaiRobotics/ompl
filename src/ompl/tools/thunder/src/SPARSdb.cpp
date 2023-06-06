@@ -1687,7 +1687,7 @@ void ompl::geometric::SPARSdb::connectGuards(Vertex v, Vertex vp, std::optional<
         edgeWeightProperty_[e] = edge_weight.value().value();
     } else {
         OMPL_WARN("We are having to compute cost because we can't load it for vertices (%i and %i)", v, vp);
-        // edgeWeightProperty_[e] = 2;  // TODO: use this value with astar
+        // TODO: use this value with astar
         edgeWeightProperty_[e] = costFunction(v, vp, true);  // TODO: use this value with astar
     }
     edgeCollisionStateProperty_[e] = NOT_CHECKED;
