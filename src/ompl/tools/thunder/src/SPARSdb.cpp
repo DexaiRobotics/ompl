@@ -435,11 +435,9 @@ bool ompl::geometric::SPARSdb::constructSolution(const Vertex start, const Verte
                                 .predecessor_map(vertexPredecessors)
                                 .distance_map(&vertexDistances[0])
                                 .visitor(CustomVisitor(goal)));
-        OMPL_WARN("Successfully used astar_search");
     }
     catch (ompl::geometric::SPARSdb::foundGoalException &)
     {
-        OMPL_WARN("couldn't use astar_search");
         // the custom exception from CustomVisitor
         if (verbose_ && false)
         {
@@ -459,7 +457,6 @@ bool ompl::geometric::SPARSdb::constructSolution(const Vertex start, const Verte
         }
         else
         {
-            OMPL_INFORM("vertexDistances[goal] = %f", vertexDistances[goal]);
             // Only clear the vertexPath after we know we have a new solution, otherwise it might have a good
             // previous one
             vertexPath.clear();  // remove any old solutions

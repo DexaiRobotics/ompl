@@ -275,7 +275,7 @@ namespace ompl
                         // OMPL_INFORM("276 weight = %d", weight.value());
                         OMPL_DEBUG("Storing edge (%i to %i) with weight %f", fromVertex, toVertex, weight.value());
                         // Convert to new structure
-                        auto edgeData = PlannerDataEdgeData();
+                        auto edgeData {PlannerDataEdgeData()};
                         edgeData.e_ = &pd.getEdge(fromVertex, toVertex);
                         edgeData.endpoints_.first = fromVertex;
                         edgeData.endpoints_.second = toVertex;
