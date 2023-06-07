@@ -1688,7 +1688,7 @@ void ompl::geometric::SPARSdb::connectGuards(Vertex v, Vertex vp, std::optional<
     } else {
         OMPL_WARN("We are having to compute cost because we can't load it for vertices (%i and %i)", v, vp);
         // TODO: use this value with astar
-        edgeWeightProperty_[e] = costFunction(v, vp, true);  // TODO: use this value with astar
+        edgeWeightProperty_[e] = costFunction(v, vp, compute_edge_cost);  // TODO: use this value with astar
     }
     edgeCollisionStateProperty_[e] = NOT_CHECKED;
 
@@ -1894,7 +1894,9 @@ void ompl::geometric::SPARSdb::setPlannerData(const base::PlannerData &data)
                     // edge invalid, skip.
                     continue;
                 // need to recalculate edge weight
-                edge_weight = std::nullopt;
+                if (useCostInRoadmap_) {
+                    edge_weight = std::nullopt;
+                }
             }
             if (edge_weight.has_value())
             {
@@ -1902,7 +1904,7 @@ void ompl::geometric::SPARSdb::setPlannerData(const base::PlannerData &data)
                 OMPL_INFORM("      Vertex %d to %d", m, n);
             }
             // add edge
-            connectGuards(m, n, edge_weight);
+            connectGuards(m, n, edge_weight, useCostInRoadmap_);
         }
     }  // for
 

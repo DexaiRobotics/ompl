@@ -782,8 +782,7 @@ namespace ompl
 
             double costFunction(const Vertex a, const Vertex b, const bool compute_cost = false) const
             {
-                const auto use_cost {useCostInRoadmap_ || compute_cost};
-                return use_cost && pdef_->getOptimizationObjective() ? pdef_->getOptimizationObjective()->motionCost(stateProperty_[a], stateProperty_[b]).value() : distanceFunction(a, b);
+                return compute_cost && pdef_->getOptimizationObjective() ? pdef_->getOptimizationObjective()->motionCost(stateProperty_[a], stateProperty_[b]).value() : distanceFunction(a, b);
             }
 
             /** \brief Sampler user for generating valid samples in the state space */
