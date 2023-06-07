@@ -67,9 +67,7 @@ double ompl::geometric::SPARSdb::edgeWeightMap::get(Edge e) const
     // Get the status of collision checking for this edge
     if (collisionStates_[e] == IN_COLLISION)
         return std::numeric_limits<double>::infinity();
-    const auto weight {boost::get(boost::edge_weight, g_, e)};
-    OMPL_INFORM("Edge weight: %f", weight);
-    return weight;
+    return boost::get(boost::edge_weight, g_, e);
 }
 
 namespace boost
