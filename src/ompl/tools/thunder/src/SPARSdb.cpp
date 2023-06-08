@@ -947,7 +947,6 @@ bool ompl::geometric::SPARSdb::addStateToRoadmap(const base::PlannerTerminationC
     bool stateAdded = false;
     // Check that the query vertex is initialized (used for internal nearest neighbor searches)
     checkQueryStateInitialization();
-    OMPL_INFORM("Attempting to add state to");
     // Deep copy
     base::State *qNew = si_->cloneState(newState);
     base::State *workState = si_->allocState();
@@ -1098,7 +1097,7 @@ bool ompl::geometric::SPARSdb::checkAddCoverage(const base::State *qNew, std::ve
             // DTC: this should actually never happen - we just created the new vertex so
             // why would it be connected to anything?
             if (!boost::edge(v, neighbor, g_).second) {
-                connectGuards(v, neighbor, std::nullopt, true);
+                connectGuards(v, neighbor, std::nullopt, useCostInRoadmap_);
             }
         }
     }
@@ -1151,7 +1150,7 @@ bool ompl::geometric::SPARSdb::checkAddConnectivity(const base::State *qNew, std
                 {
                     // The components haven't been united by previous links
                     if (!sameComponent(statesInDiffConnectedComponent, newVertex))
-                        connectGuards(newVertex, statesInDiffConnectedComponent, std::nullopt, true);
+                        connectGuards(newVertex, statesInDiffConnectedComponent, std::nullopt, useCostInRoadmap_);
                 }
             }
 
@@ -1179,7 +1178,7 @@ bool ompl::geometric::SPARSdb::checkAddInterface(const base::State *qNew, std::v
                     // Connect them
                     if (verbose_)
                         OMPL_INFORM(" ---   INTERFACE: directly connected nodes ");
-                    connectGuards(visibleNeighborhood[0], visibleNeighborhood[1], std::nullopt, true);
+                    connectGuards(visibleNeighborhood[0], visibleNeighborhood[1], std::nullopt, useCostInRoadmap_);
                     // And report that we added to the roadmap
                     resetFailures();
                     // Report success
@@ -1191,8 +1190,8 @@ bool ompl::geometric::SPARSdb::checkAddInterface(const base::State *qNew, std::v
                     if (verbose_)
                         OMPL_INFORM(" --- Adding node for INTERFACE  ");
                     Vertex v = addGuard(si_->cloneState(qNew), INTERFACE);
-                    connectGuards(v, visibleNeighborhood[0], std::nullopt, true);
-                    connectGuards(v, visibleNeighborhood[1], std::nullopt, true);
+                    connectGuards(v, visibleNeighborhood[0], std::nullopt, useCostInRoadmap_);
+                    connectGuards(v, visibleNeighborhood[1], std::nullopt, useCostInRoadmap_);
                     if (verbose_)
                         OMPL_INFORM(" ---   INTERFACE: connected two neighbors through new interface node ");
                     // Report success
@@ -1243,7 +1242,7 @@ bool ompl::geometric::SPARSdb::checkAddPath(Vertex v)
             {
                 spannerPropertyWasViolated = true;  // Report that we added for the path
                 if (si_->checkMotion(stateProperty_[r], stateProperty_[rp]))
-                    connectGuards(r, rp, std::nullopt, true);
+                    connectGuards(r, rp, std::nullopt, useCostInRoadmap_);
                 else
                 {
                     auto p(std::make_shared<PathGeometric>(si_));
@@ -1280,12 +1279,12 @@ bool ompl::geometric::SPARSdb::checkAddPath(Vertex v)
                                 OMPL_INFORM(" --- Adding node for QUALITY");
                             vnew = addGuard(st, QUALITY);
 
-                            connectGuards(prior, vnew, std::nullopt, true);
+                            connectGuards(prior, vnew, std::nullopt, useCostInRoadmap_);
                             prior = vnew;
                         }
                         // clear the states, so memory is not freed twice
                         states.clear();
-                        connectGuards(prior, rp, std::nullopt, true);
+                        connectGuards(prior, rp, std::nullopt, useCostInRoadmap_);
                     }
                 }
             }
@@ -1684,9 +1683,8 @@ void ompl::geometric::SPARSdb::connectGuards(Vertex v, Vertex vp, std::optional<
     if (edge_weight.has_value()) {
         edgeWeightProperty_[e] = edge_weight.value().value();
     } else {
-        OMPL_WARN("We are having to compute cost because we can't load it for vertices (%i and %i)", v, vp);
-        // TODO: use this value with astar
-        edgeWeightProperty_[e] = costFunction(v, vp, compute_edge_cost);  // TODO: use this value with astar
+        // returns edge cost when compute_edge_cost is TRUE, and edge length otherwise.
+        edgeWeightProperty_[e] = costFunction(v, vp, compute_edge_cost);
     }
     edgeCollisionStateProperty_[e] = NOT_CHECKED;
 
