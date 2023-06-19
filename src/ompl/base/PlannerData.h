@@ -342,7 +342,7 @@ namespace ompl
             /// returns false.
             bool getEdgeWeight(unsigned int v1, unsigned int v2, Cost *weight) const;
             
-            std::optional<ompl::base::Cost> getEdgeWeightReturned(unsigned int v1, unsigned int v2) const;
+            std::optional<ompl::base::Cost> getEdgeWeightOrNull(unsigned int v1, unsigned int v2) const;
             /// \brief Sets the weight of the edge between the given
             /// vertex indices.  If an edge between v1 and v2 does not
             /// exist, this function returns false.

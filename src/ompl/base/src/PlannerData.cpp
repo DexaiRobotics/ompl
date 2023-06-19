@@ -170,7 +170,7 @@ bool ompl::base::PlannerData::getEdgeWeight(unsigned int v1, unsigned int v2, Co
     return false;
 }
 
-std::optional<ompl::base::Cost> ompl::base::PlannerData::getEdgeWeightReturned(unsigned int v1, unsigned int v2) const
+std::optional<ompl::base::Cost> ompl::base::PlannerData::getEdgeWeightOrNull(unsigned int v1, unsigned int v2) const
 {
     Graph::Edge e;
     Cost weight {};

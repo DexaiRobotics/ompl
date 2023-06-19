@@ -1886,7 +1886,7 @@ void ompl::geometric::SPARSdb::setPlannerData(const base::PlannerData &data)
             Vertex n = idToVertex[toVertex];
 
             // Add the edge to the graph
-            auto edge_weight {data.getEdgeWeightReturned(fromVertex,toVertex)};
+            auto edge_weight {data.getEdgeWeightOrNull(fromVertex,toVertex)};
             if (migrateRoadmapOnLoad_) {
                 // skip adding invalid edge
                 const base::State *fromState = data.getVertex(fromVertex).getState();

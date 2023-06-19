@@ -873,7 +873,9 @@ namespace ompl
             /** \brief Flag to indicate wheter or not we do collision checking for paths retrieved from the database */
             bool collisionCheckOnRecall_ {false};
 
-            /** \brief When loading the roadmap nodes and edges, validate them. Skip adding invalid nodes and edges, and recompute weights for all others */
+            /** \brief When loading the roadmap nodes and edges, validate them. Skip adding invalid nodes and edges, and recompute weights for all others 
+             *  This slows down the load and should only be used offline.
+            */
             bool migrateRoadmapOnLoad_ {false};
 
             /** \brief Used by getSimilarPaths */

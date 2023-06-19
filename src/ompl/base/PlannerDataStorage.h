@@ -268,7 +268,7 @@ namespace ompl
                     for (unsigned int toVertex : edgeList)
                     {
                         // Get cost
-                        std::optional<Cost> weight_opt {pd.getEdgeWeightReturned(fromVertex, toVertex)};
+                        std::optional<Cost> weight_opt {pd.getEdgeWeightOrNull(fromVertex, toVertex)};
                         if (!weight_opt.has_value())
                             OMPL_ERROR("Unable to get edge weight");
                         Cost weight {weight_opt.value()};
