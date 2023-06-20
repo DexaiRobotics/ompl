@@ -272,7 +272,6 @@ namespace ompl
                         if (!weight_opt.has_value())
                             OMPL_ERROR("Unable to get edge weight");
                         Cost weight {weight_opt.value()};
-                        // OMPL_INFORM("276 weight = %d", weight.value());
                         OMPL_DEBUG("Storing edge (%i to %i) with weight %f", fromVertex, toVertex, weight.value());
                         // Convert to new structure
                         auto edgeData {PlannerDataEdgeData()};
