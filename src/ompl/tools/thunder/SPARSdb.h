@@ -443,6 +443,11 @@ namespace ompl
                 useCostInRoadmap_ = useCostInRoadmap;
             }
 
+            void setAddEdgeWithCost(const bool addEdgeWithCost)
+            {
+                addEdgeWithCost_ = addEdgeWithCost;
+            }
+
             void setPathSamplingFactor(const int pathSamplingFactor)
             {
                 pathSamplingFactor_ = pathSamplingFactor;
@@ -500,6 +505,11 @@ namespace ompl
             bool getUseCostInRoadmap() const
             {
                 return useCostInRoadmap_;
+            }
+
+            bool getAddEdgeWithCost() const
+            {
+                return addEdgeWithCost_;
             }
 
             std::optional<int> getPathSamplingFactor() const
@@ -887,7 +897,9 @@ namespace ompl
             /** \brief optional variable. If set, will sample each segment in the path with this many nodes and attempt to insert */
             std::optional<int> pathSamplingFactor_ {std::nullopt};
 
-            bool useCostInRoadmap_ {false};
+            bool useCostInRoadmap_{false};
+
+            bool addEdgeWithCost_{false};
 
             /** \brief Option to enable debugging output */
             bool verbose_{false};
