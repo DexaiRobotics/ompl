@@ -967,7 +967,6 @@ bool ompl::geometric::SPARSdb::addStateToRoadmap(const base::PlannerTerminationC
         // if roadmap has only one connected component when we try to add a node, skip the expensive attempt to add it as a connectivity node.
         const bool check_if_node_is_connecting {check_connected_components_ && getNumConnectedComponents() > 1};
         if (!check_if_node_is_connecting && vnbhd.size()) {
-            OMPL_DEBUG("NOT adding state!");
             return false;
         }
         OMPL_DEBUG("Trying to add state! CCs: %d", getNumConnectedComponents());
