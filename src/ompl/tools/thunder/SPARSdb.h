@@ -897,8 +897,10 @@ namespace ompl
             /** \brief optional variable. If set, will sample each segment in the path with this many nodes and attempt to insert */
             std::optional<int> pathSamplingFactor_ {std::nullopt};
 
+            /** \brief If true: When loading the roadmap, recompute the edge costs and update them in the roadmap. This is expensive. */
             bool useCostInRoadmap_{false};
 
+            /** \brief If true: When adding nodes and edges from a planner solution, compute edge costs and not just path length. */
             bool addEdgeWithCost_{false};
 
             /** \brief Option to enable debugging output */
