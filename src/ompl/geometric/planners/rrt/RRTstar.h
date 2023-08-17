@@ -40,6 +40,7 @@
 #include "ompl/geometric/planners/PlannerIncludes.h"
 #include "ompl/base/OptimizationObjective.h"
 #include "ompl/datastructures/NearestNeighbors.h"
+#include "ompl/geometric/planners/rrt/SimpleMotion.h"
 
 #include <limits>
 #include <vector>
@@ -65,7 +66,7 @@ namespace ompl
            the algorithm terminates before the elapsed time.
            @par External documentation
            S. Karaman and E. Frazzoli, Sampling-based
-           Algorithms for Optimal Motion Planning, International Journal of Robotics
+           Algorithms for Optimal SimpleMotion Planning, International Journal of Robotics
            Research, Vol 30, No 7, 2011.
            https://arxiv.org/abs/1105.1186
         */
@@ -144,8 +145,69 @@ namespace ompl
                 if (nn_ && nn_->size() != 0)
                     OMPL_WARN("Calling setNearestNeighbors will clear all states.");
                 clear();
-                nn_ = std::make_shared<NN<Motion *>>();
+                nn_ = std::make_shared<NN<SimpleMotion *>>();
                 setup();
+            }
+
+            // NearestNeighbors<SimpleMotion *> getNearestNeighbors() {
+            //   return static_cast<NearestNeighbors<SimpleMotion *>>(*nn_);
+            // }
+
+            // void copyNearestNeighbors(std::shared_ptr<NearestNeighbors<SimpleMotion *>> nn) {
+            //   *nn_ = static_cast<NearestNeighbors<SimpleMotion *>>(*nn); 
+            //   setup(); 
+            // }
+            void addPotentialSolutionPath(PathGeometric soln_path) {
+              // std::cerr << "adding " << soln_path.getStateCount() << "states to the nn." << std::endl;
+              for(unsigned int i{0}; i<soln_path.getStateCount(); ++i) {
+                if(!si_) {
+                  std::cerr << "no space info!" << std::endl;
+                }
+                if(!pdef_){
+                  std::cerr << "no pdef!" << std::endl;
+                }
+                if(!opt_) {
+                  // opt_ = pdef_->getOptimizationObjective();
+                  std::cerr << "no space optimizer!" << std::endl;
+                }
+                if(!nn_) {
+                  std::cerr << "no nearest neighbor object!" << std::endl;
+                }
+                // std::cerr << "we have si, pdef, opt, and nn. ready to rock." << std::endl; 
+                base::State *dstate {soln_path.getState(i)};
+                if(!dstate){
+                  std::cerr << "failed to copy the state for " << i << std::endl;
+                }
+                // create a motion
+                auto *motion = new SimpleMotion(si_);
+
+                si_->copyState(motion->state, dstate);
+                if(i==0){
+                  // std::cerr << "i=" << i << ", therefore setting to identity cost" << std::endl;
+                  motion->cost = opt_->identityCost();
+                } else {
+                  // std::cerr << "i=" << i << ", finding nearest neighbor." << std::endl;
+                  SimpleMotion *nmotion = nn_->nearest(motion);
+                  if(!nmotion) {
+                    std::cerr << "failed for find a nearest neighbor nmotion." << std::endl;
+                  }
+                  motion->incCost = opt_->motionCost(nmotion->state, motion->state);
+                  motion->cost = opt_->combineCosts(nmotion->cost, motion->incCost);
+                  motion->parent = nmotion;
+                }
+                if(i == (soln_path.getStateCount()-1)) {
+                  double distanceFromGoal;
+                  base::Goal *goal = pdef_->getGoal().get();
+                  if (goal->isSatisfied(motion->state, &distanceFromGoal))
+                  {
+                      motion->inGoal = true;
+                      goalSimpleMotions_.push_back(motion);
+                      bestGoalSimpleMotion_ = goalSimpleMotions_.front();
+                      bestCost_ = bestGoalSimpleMotion_->cost;
+                  }
+                }
+                nn_->add(motion);
+              }
             }
 
             /** \brief Option that delays collision checking procedures.
@@ -329,38 +391,6 @@ namespace ompl
             }
 
         protected:
-            /** \brief Representation of a motion */
-            class Motion
-            {
-            public:
-                /** \brief Constructor that allocates memory for the state. This constructor automatically allocates
-                 * memory for \e state, \e cost, and \e incCost */
-                Motion(const base::SpaceInformationPtr &si) : state(si->allocState()), parent(nullptr), inGoal(false)
-                {
-                }
-
-                ~Motion() = default;
-
-                /** \brief The state contained by the motion */
-                base::State *state;
-
-                /** \brief The parent motion in the exploration tree */
-                Motion *parent;
-
-                /** \brief Set to true if this vertex is in the goal region */
-                bool inGoal;
-
-                /** \brief The cost up to this motion */
-                base::Cost cost;
-
-                /** \brief The incremental cost of this motion's parent to this motion (this is stored to save distance
-                 * computations in the updateChildCosts() method) */
-                base::Cost incCost;
-
-                /** \brief The set of motions descending from the current motion */
-                std::vector<Motion *> children;
-            };
-
             /** \brief Create the samplers */
             void allocSampler();
 
@@ -386,19 +416,19 @@ namespace ompl
             };
 
             /** \brief Compute distance between motions (actually distance between contained states) */
-            double distanceFunction(const Motion *a, const Motion *b) const
+            double distanceFunction(const SimpleMotion *a, const SimpleMotion *b) const
             {
                 return si_->distance(a->state, b->state);
             }
 
             /** \brief Gets the neighbours of a given motion, using either k-nearest of radius as appropriate. */
-            void getNeighbors(Motion *motion, std::vector<Motion *> &nbh) const;
+            void getNeighbors(SimpleMotion *motion, std::vector<SimpleMotion *> &nbh) const;
 
             /** \brief Removes the given motion from the parent's child list */
-            void removeFromParent(Motion *m);
+            void removeFromParent(SimpleMotion *m);
 
             /** \brief Updates the cost of the children of this node if the cost up to this node has changed */
-            void updateChildCosts(Motion *m);
+            void updateChildCosts(SimpleMotion *m);
 
             /** \brief Prunes all those states which estimated total cost is higher than pruneTreeCost.
                 Returns the number of motions pruned. Depends on the parameter set by
@@ -410,26 +440,27 @@ namespace ompl
                  (\e setAdmissibleCostToCome()) is true, a heuristic estimate of the cost to come is used;
                  otherwise, the current cost to come to the motion is used (which may overestimate the cost
                  through the motion). */
-            base::Cost solutionHeuristic(const Motion *motion) const;
+            base::Cost solutionHeuristic(const SimpleMotion *motion) const;
 
             /** \brief Add the children of a vertex to the given list. */
-            void addChildrenToList(std::queue<Motion *, std::deque<Motion *>> *motionList, Motion *motion);
+            void addChildrenToList(std::queue<SimpleMotion *, std::deque<SimpleMotion *>> *motionList, SimpleMotion *motion);
 
             /** \brief Check whether the given motion passes the specified cost threshold, meaning it will be \e kept
              * during pruning */
-            bool keepCondition(const Motion *motion, const base::Cost &threshold) const;
+            bool keepCondition(const SimpleMotion *motion, const base::Cost &threshold) const;
 
             /** \brief Calculate the k_RRG* and r_RRG* terms */
             void calculateRewiringLowerBounds();
 
             /** \brief State sampler */
             base::StateSamplerPtr sampler_;
+            // base::ValidStateSamplerPtr sampler_;
 
             /** \brief An informed sampler */
             base::InformedSamplerPtr infSampler_;
 
             /** \brief A nearest-neighbors datastructure containing the tree of motions */
-            std::shared_ptr<NearestNeighbors<Motion *>> nn_;
+            std::shared_ptr<NearestNeighbors<SimpleMotion *>> nn_;
 
             /** \brief The fraction of time the goal is picked as the state to expand towards (if such a state is
              * available) */
@@ -461,10 +492,10 @@ namespace ompl
             base::OptimizationObjectivePtr opt_;
 
             /** \brief The best goal motion. */
-            Motion *bestGoalMotion_{nullptr};
+            SimpleMotion *bestGoalSimpleMotion_{nullptr};
 
             /** \brief A list of states in the tree that satisfy the goal condition */
-            std::vector<Motion *> goalMotions_;
+            std::vector<SimpleMotion *> goalSimpleMotions_;
 
             /** \brief The status of the tree pruning option. */
             bool useTreePruning_{false};
@@ -496,8 +527,8 @@ namespace ompl
             /** \brief The size of the batches. */
             unsigned int batchSize_{1u};
 
-            /** \brief Stores the start states as Motions. */
-            std::vector<Motion *> startMotions_;
+            /** \brief Stores the start states as SimpleMotions. */
+            std::vector<SimpleMotion *> startSimpleMotions_;
 
             /** \brief Best cost found so far by algorithm */
             base::Cost bestCost_{std::numeric_limits<double>::quiet_NaN()};

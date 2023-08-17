@@ -39,6 +39,7 @@
 
 #include "ompl/datastructures/NearestNeighbors.h"
 #include "ompl/geometric/planners/PlannerIncludes.h"
+#include "ompl/geometric/planners/rrt/SimpleMotion.h"
 
 namespace ompl
 {
@@ -113,6 +114,15 @@ namespace ompl
                 tGoal_ = std::make_shared<NN<Motion *>>();
                 setup();
             }
+
+            // std::shared_ptr<NearestNeighbors<SimpleMotion *>> getNearestNeighbors() {
+            //   return nn_;
+            // }
+
+            // void copyNearestNeighbors(std::shared_ptr<NearestNeighbors<SimpleMotion *>> nn) {
+            //   *nn_ = *nn; 
+            //   setup(); 
+            // }
 
             void setup() override;
 
