@@ -102,6 +102,7 @@ void ompl::tools::Thunder::setup()
         int counter = 0;
         for (auto &planner : planner_vec_)
         {
+            counter++;
             if (!planner)
             {
                 if (pa_)
