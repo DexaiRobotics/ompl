@@ -201,7 +201,7 @@ bool ompl::geometric::SPARSdb::getSimilarPaths(int /*nearestK*/, const base::Sta
     // Start
     OMPL_INFORM("Looking for a node near the problem start");
     OMPL_INFORM("jajaja");
-    if (!findGraphNeighbors(start, startVertexCandidateNeighbors_, sparseDelta_/4))
+    if (!findGraphNeighbors(start, startVertexCandidateNeighbors_))
     {
         OMPL_INFORM("No graph neighbors found for start within radius %f", sparseDelta_);
         return false;
@@ -211,7 +211,7 @@ bool ompl::geometric::SPARSdb::getSimilarPaths(int /*nearestK*/, const base::Sta
 
     // Goal
     OMPL_INFORM("Looking for a node near the problem goal");
-    if (!findGraphNeighbors(goal, goalVertexCandidateNeighbors_, sparseDelta_/4))
+    if (!findGraphNeighbors(goal, goalVertexCandidateNeighbors_))
     {
         OMPL_INFORM("No graph neighbors found for goal within radius %f", sparseDelta_);
         return false;
