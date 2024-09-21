@@ -69,7 +69,7 @@ ompl::base::Cost ompl::base::MinimaxObjective::motionCost(const State *s1, const
     if (this->isCostBetterThan(worstCost, lastCost))
         worstCost = lastCost;
 
-    return worstCost;
+    return si_->getStateSpace()->distance(s1, s2) * worstCost;
 }
 
 ompl::base::Cost ompl::base::MinimaxObjective::combineCosts(Cost c1, Cost c2) const
