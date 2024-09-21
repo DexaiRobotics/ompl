@@ -1313,11 +1313,8 @@ void ompl::geometric::SPARSdb::findGraphNeighbors(base::State *st, std::vector<V
     visibleNeighborhood.clear();
     stateProperty_[queryVertex_] = st;
     if (!radius.has_value()) {
-        OMPL_INFORM("No radius provided, using sparseDelta_");
         radius = sparseDelta_;
     }
-    OMPL_INFORM("radius: %f", *radius);
-    OMPL_INFORM("sparseDelta_: %f", sparseDelta_);
     nn_->nearestR(queryVertex_, *radius, graphNeighborhood);
     if (verbose_ && false)
         OMPL_INFORM("Finding nearest nodes in NN tree within radius %f", *radius);
