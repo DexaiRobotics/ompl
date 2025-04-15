@@ -200,6 +200,7 @@ bool ompl::geometric::SPARSdb::getSimilarPaths(int /*nearestK*/, const base::Sta
 
     // Start
     OMPL_INFORM("Looking for a node near the problem start");
+    OMPL_INFORM("jajaja");
     if (!findGraphNeighbors(start, startVertexCandidateNeighbors_))
     {
         OMPL_INFORM("No graph neighbors found for start within radius %f", sparseDelta_);
@@ -1330,8 +1331,11 @@ bool ompl::geometric::SPARSdb::findGraphNeighbors(const base::State *state, std:
     base::State *stateCopy = si_->cloneState(state);
 
     if (!radius.has_value()) {
+        OMPL_INFORM("No radius provided, using sparseDelta_");
         radius = sparseDelta_;
     }
+    OMPL_INFORM("radius: %f", *radius);
+    OMPL_INFORM("sparseDelta_: %f", sparseDelta_);
     // Don't check for visibility
     graphNeighborhood.clear();
     stateProperty_[queryVertex_] = stateCopy;

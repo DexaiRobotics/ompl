@@ -174,10 +174,10 @@ void ompl::tools::ParallelPlan::solveMore(base::Planner *planner, std::size_t mi
 
         if (nrSol >= maxSolCount)
             ptc->terminate();
-
         double found_path_length {pdef_->getSolutionPath()->length()};
-        OMPL_DEBUG("ParallelPlan.solveMore: Solution of length: %lf found by %s in %lf seconds", found_path_length, planner->getName().c_str(), duration);
-
+        double found_path_cost {pdef_->getSolutionPath()->cost(pdef_->getOptimizationObjective()).value()};
+        OMPL_DEBUG("ParallelPlan.solveMore: Solution of length: %lf and cost: %lf found by %s in %lf seconds", found_path_length, found_path_cost, planner->getName().c_str(), duration);
+        // OMPL_DEBUG("ParallelPlan.solveMore: Solution of length: %lf found by %s in %lf seconds", found_path_length, planner->getName().c_str(), duration);
         const std::vector<base::PlannerSolution> &paths = pdef_->getSolutions();
 
         std::lock_guard<std::mutex> slock(phlock_);
